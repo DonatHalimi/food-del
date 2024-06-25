@@ -9,7 +9,7 @@
 
 ## Overview
 
-The frontend setup utilizes React with Vite for fast development using HMR (Hot Module Replacement). ESLint is configured to enforce code quality standards. The directory structure organizes code into src, with specific folders for assets, components, context providers, and pages to maintain clarity and reusability across the application.
+The backend setup uses Node.js with Express for building web applications and APIs. MongoDB is employed with Mongoose as the Object Data Modeling (ODM) library for database interactions. Security features include JWT (JSON Web Token) for authentication and bcrypt for password hashing. The project structure is organized with clear separation of concerns, including models for data representation, controllers for handling business logic, routes for defining API endpoints, and configuration files for environment-specific settings.
 
 ## Getting Started
 
@@ -39,7 +39,7 @@ The frontend setup utilizes React with Vite for fast development using HMR (Hot 
    npm run server
     ```
 
-##### After running the above, http://localhost:5173 will open automatically in your default browser.
+##### After running the above, the server will be running on http://localhost:4000 
 
 ## Dependencies
 
