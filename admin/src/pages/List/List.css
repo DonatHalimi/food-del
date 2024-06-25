@@ -118,3 +118,31 @@
 .pagination-button:disabled:hover {
     background-color: #e0e0e0;
 }
+
+.download-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.download-buttons button {
+    position: relative;
+    top: 806px;
+    left: 780px;
+    padding: 8px 10px;
+    background-color: rgb(53, 53, 53);
+    border: 1px solid #e0e0e0;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.6s;
+}
+
+.download-buttons button:hover {
+    background-color: black;
+}
