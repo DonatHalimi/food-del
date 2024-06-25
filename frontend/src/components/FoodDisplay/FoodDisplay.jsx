@@ -15,7 +15,7 @@ const FoodDisplay = ({ category }) => {
     // Pagination
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredList.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
+    const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredList.length / itemsPerPage);
 
     useEffect(() => {
@@ -58,6 +58,6 @@ const FoodDisplay = ({ category }) => {
             </div>
         </div>
     );
-}
+};
 
 export default FoodDisplay;
