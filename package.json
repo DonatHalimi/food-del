@@ -1,0 +1,16 @@
+{
+  "name": "food-del",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run frontend\" \"npm run server\"  \"npm run admin\"",
+    "server": "cd backend && npm run server",
+    "frontend": "cd frontend && npm run dev",
+    "admin": "cd admin && npm run dev"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.2"
+  }
+}

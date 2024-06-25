@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Outfit;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #fcfcfc;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #a9a9a9;
+}
+
+.app-content {
+  display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+::selection {
+  background-color: #4B5563;
+  color: white
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #CACFCD;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #acb2b0;
+  transition: all 0.3s;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+
+body::-webkit-scrollbar-corner {
+  background-color: #FFFFFF;
+}

@@ -1,0 +1,119 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.list-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.list-title p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 50px;
+    color: #262626;
+}
+
+.category-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 17px;
+    padding: 10px 0;
+    margin-left: auto;
+    align-items: center;
+}
+
+.category-filter div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.category-filter div img {
+    width: 50px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.category-filter div p {
+    margin: 0;
+    color: #747474;
+    font-size: 12px;
+}
+
+.category-filter div.active img {
+    transform: scale(1.1);
+    border: 2px solid tomato;
+    padding: 1px;
+}
+
+.list-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.list-table-format {
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 1fr 1fr 0.5fr;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border: 1px solid #cacaca;
+    font-size: 13px;
+}
+
+.list-table-format.title {
+    background-color: #f9f9f9;
+}
+
+.list-table-format img {
+    width: 50px;
+    border-radius: 10%;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.pagination-button {
+    margin: 0 2px;
+    padding: 8px 12px;
+    border: 1px solid #cacaca;
+    background-color: #f9f9f9;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.pagination-button:hover {
+    background-color: #e0e0e0;
+}
+
+.pagination-button.active {
+    background-color: tomato;
+    color: white;
+}
+
+.pagination-button:disabled {
+    background-color: #e0e0e0;
+    color: #a0a0a0;
+    cursor: not-allowed;
+    border: 1px solid #d0d0d0;
+}
+
+.pagination-button:disabled:hover {
+    background-color: #e0e0e0;
+}
