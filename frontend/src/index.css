@@ -50,6 +50,10 @@ body::-webkit-scrollbar-corner {
   margin: auto;
 }
 
+img{
+  user-select: none;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;

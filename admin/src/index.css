@@ -60,3 +60,7 @@ body::-webkit-scrollbar-track {
 body::-webkit-scrollbar-corner {
   background-color: #FFFFFF;
 }
+
+img {
+  user-select: none;
+}

@@ -60,7 +60,7 @@
     display: flex;
     align-items: start;
     gap: 8px;
-    margin-top: -15px;
+    margin-top: -10px;
 }
 
 .login-popup-condition input {
@@ -71,4 +71,14 @@
     color: tomato;
     font-weight: 500;
     cursor: pointer;
+}
+
+.login-popup-condition p span,
+.login-popup-condition p a {
+    color: tomato;
+    cursor: pointer;
+}
+
+.login-popup-condition p a:hover {
+    text-decoration: underline;
 }
