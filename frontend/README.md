@@ -29,7 +29,7 @@ The frontend setup utilizes React with Vite for fast development using HMR (Hot 
 3. Start the development server:
 
    ```
-   npm run server
+   npm run dev
     ```
 
 ##### After running the above, http://localhost:3000 will open automatically in your default browser.
