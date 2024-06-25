@@ -1,54 +1,84 @@
-import React from 'react'
-import { useEffect } from 'react'
-import './Orders.css'
-import { useState } from 'react'
-import axios from 'axios'
-import { toast } from 'react-toastify'
-import { assets } from '../../assets/assets'
+import React, { useEffect, useState } from 'react';
+import './Orders.css';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { assets } from '../../assets/assets';
 
 const Orders = ({ url }) => {
-    const [orders, setOrders] = useState([])
+    const [orders, setOrders] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(6); 
 
     const fetchAllOrders = async () => {
-        const response = await axios.get(url + "/api/order/list")
-        if (response.data.success) {
-            setOrders(response.data.data)
-            console.log(response.data.data)
-        } else {
-            toast.error("Error fetching orders")
+        try {
+            const response = await axios.get(url + "/api/order/list");
+            if (response.data.success) {
+                setOrders(response.data.data);
+            } else {
+                toast.error("Error fetching orders");
+            }
+        } catch (error) {
+            toast.error("Error fetching orders");
+            console.error("Error fetching orders:", error);
         }
-    }
+    };
 
     const statusHandler = async (event, orderId) => {
-        const status = event.target.value
-        const response = await axios.post(url + "/api/order/status", { orderId, status })
-        
-        if (response.data.success) {
-            await fetchAllOrders()
-            toast.success(response.data.message)
-        } else {
-            toast.error(response.data.message)
+        const status = event.target.value;
+        try {
+            const response = await axios.post(url + "/api/order/status", { orderId, status });
+            if (response.data.success) {
+                await fetchAllOrders();
+                toast.success(response.data.message);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            toast.error("Error updating order status");
+            console.error("Error updating order status:", error);
         }
-    }
+    };
 
     useEffect(() => {
-        fetchAllOrders()
-    }, [])
+        fetchAllOrders();
+    }, []);
+
+    // Pagination logic
+    const indexOfLastOrder = currentPage * itemsPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - itemsPerPage;
+    const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+    const totalPages = Math.ceil(orders.length / itemsPerPage);
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const nextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     return (
         <div className='order add'>
             <h3>Order Page</h3>
             <div className="order-list">
-                {orders.map((order, index) => (
+                {currentOrders.map((order, index) => (
                     <div key={index} className="order-item">
                         <img src={assets.parcel_icon} alt="" />
                         <div>
                             <p className='order-item-food'>
                                 {order.items.map((item, index) => {
                                     if (index === order.items.length - 1) {
-                                        return item.name + " x " + item.quantity
+                                        return item.name + " x " + item.quantity;
                                     } else {
-                                        return item.name + " x " + item.quantity + ", "
+                                        return item.name + " x " + item.quantity + ", ";
                                     }
                                 })}
                             </p>
@@ -69,7 +99,18 @@ const Orders = ({ url }) => {
                     </div>
                 ))}
             </div>
+            {/* Pagination Controls */}
+            <div className="pagination">
+                <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <button key={index} className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`} onClick={() => paginate(index + 1)}>
+                        {index + 1}
+                    </button>
+                ))}
+                <button className="pagination-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
+            </div>
         </div>
-    )
-}
-export default Orders
+    );
+};
+
+export default Orders;

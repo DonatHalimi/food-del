@@ -17,7 +17,8 @@
     margin-bottom: 50px;
 }
 
-.place-order-left input {
+.place-order-left input,
+.place-order-left select {
     margin-bottom: 15px;
     width: 100%;
     padding: 10px;
@@ -31,11 +32,16 @@
     gap: 10px;
 }
 
-.place-order-right{
+.place-order-left .multi-fields input,
+.place-order-left .multi-fields select {
+    flex: 1;
+}
+
+.place-order-right {
     width: 100%;
     max-width: max(40%, 500px);
 }
 
-.place-order .cart-total button{
+.place-order .cart-total button {
     margin-top: 30px;
 }
