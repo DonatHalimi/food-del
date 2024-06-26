@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './List.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -6,11 +6,11 @@ import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import { BsTrash3 } from 'react-icons/bs';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { Document, Packer, Paragraph, Table, TableCell, TableRow } from 'docx';
+import html2canvas from 'html2canvas';
+import { StoreContext } from '../../../../frontend/src/context/StoreContext';
 
 const List = ({ url }) => {
+    const { categories, selectedCategory, setSelectedCategory } = useContext(StoreContext);
     const [list, setList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [foodIdToDelete, setFoodIdToDelete] = useState(null);
@@ -19,15 +19,19 @@ const List = ({ url }) => {
 
     useEffect(() => {
         fetchList();
-    }, []);
+    }, [selectedCategory]);
 
     const fetchList = async () => {
         try {
             const response = await axios.get(`${url}/api/food/list`);
             if (response.data.success) {
-                setList(response.data.data);
+                if (selectedCategory === 'All') {
+                    setList(response.data.data);
+                } else {
+                    setList(response.data.data.filter(item => item.category.name === selectedCategory));
+                }
             } else {
-                toast.error("Error fetching food list");
+                toast.error(response.data.message);
             }
         } catch (error) {
             toast.error("Error fetching food list");
@@ -61,74 +65,56 @@ const List = ({ url }) => {
         setIsModalOpen(false);
     };
 
-    const downloadPDF = () => {
-        const doc = new jsPDF();
+    const downloadPDF = async () => {
+        const doc = new jsPDF('p', 'pt', 'a4');
         const tableColumn = ["Item", "Name", "Category", "Price"];
         const tableRows = [];
 
-        list.forEach(item => {
-            const itemData = [
-                item.image,
-                item.name,
-                item.category.name, // Accessing category name
-                item.price
-            ];
-            tableRows.push(itemData);
+        const promises = list.map(async item => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = `${url}/images/` + item.image;
+
+            return new Promise((resolve, reject) => {
+                img.onload = async () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 30; // Fixed width
+                    canvas.height = 30; // Fixed height
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 30, 30); // Draw image with fixed size
+                    const imgData = canvas.toDataURL('image/png');
+
+                    const itemData = [
+                        { content: '', image: imgData },
+                        item.name,
+                        item.category.name,
+                        item.price
+                    ];
+                    tableRows.push(itemData);
+                    resolve();
+                };
+                img.onerror = (error) => reject(error);
+            });
         });
 
-        doc.autoTable(tableColumn, tableRows, { startY: 20 });
+        await Promise.all(promises);
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            didDrawCell: data => {
+                if (data.column.dataKey === 0 && data.cell.section === 'body') {
+                    doc.addImage(data.cell.raw.image, 'PNG', data.cell.x + 2, data.cell.y + 2, 30, 30); // Add image with fixed size
+                }
+            }
+        });
+
         doc.text("Food List", 14, 15);
         doc.save("food_list.pdf");
     };
 
-    const downloadExcel = () => {
-        const formattedList = list.map(item => ({
-            ...item,
-            category: item.category.name,
-        }));
-        const worksheet = XLSX.utils.json_to_sheet(formattedList);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Food List");
-        XLSX.writeFile(workbook, "food_list.xlsx");
-    };
-
-    const downloadWord = async () => {
-        const tableRows = list.map(item => (
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph(item.image)] }),
-                    new TableCell({ children: [new Paragraph(item.name)] }),
-                    new TableCell({ children: [new Paragraph(item.category.name)] }), 
-                    new TableCell({ children: [new Paragraph(item.price)] })
-                ]
-            })
-        ));
-
-        const doc = new Document({
-            sections: [
-                {
-                    children: [
-                        new Paragraph({ text: "Food List", heading: "Heading1" }),
-                        new Table({
-                            rows: [
-                                new TableRow({
-                                    children: [
-                                        new TableCell({ children: [new Paragraph("Item")] }),
-                                        new TableCell({ children: [new Paragraph("Name")] }),
-                                        new TableCell({ children: [new Paragraph("Category")] }),
-                                        new TableCell({ children: [new Paragraph("Price")] })
-                                    ]
-                                }),
-                                ...tableRows
-                            ]
-                        })
-                    ]
-                }
-            ]
-        });
-
-        const blob = await Packer.toBlob(doc);
-        saveAs(blob, "food_list.docx");
+    const printList = () => {
+        window.print();
     };
 
     // Pagination
@@ -153,14 +139,38 @@ const List = ({ url }) => {
         }
     };
 
+    const handleCategoryClick = (categoryName) => {
+        setSelectedCategory(prev => prev === categoryName ? 'All' : categoryName);
+    };
+
     return (
         <div className='list add'>
             <div className='list-title'>
                 <p>All Foods List</p>
                 <div className="download-buttons">
                     <button onClick={downloadPDF}>Export PDF</button>
-                    <button onClick={downloadExcel}>Export Excel</button>
-                    <button onClick={downloadWord}>Export Word</button>
+                    <button onClick={printList}>Print</button>
+                </div>
+            </div>
+            <div className='category-filter'>
+                {categories.map((category, index) => (
+                    <div
+                        key={index}
+                        className={selectedCategory === category.name ? 'active' : ''}
+                        onClick={() => handleCategoryClick(category.name)}
+                    >
+                        <img
+                            className={selectedCategory === category.name ? "active" : ""}
+                            src={`${url}/images/` + category.image}
+                            alt={category.name}
+                        />
+                        <p>{category.name}</p>
+                    </div>
+                ))}
+                <div
+                    className={selectedCategory === 'All' ? 'active' : ''}
+                    onClick={() => setSelectedCategory('All')}
+                >
                 </div>
             </div>
             <div className="list-table">
@@ -171,18 +181,15 @@ const List = ({ url }) => {
                     <b>Price</b>
                     <b>Action</b>
                 </div>
-                {currentItems.map((item, index) => {
-                    console.log(item);
-                    return (
-                        <div key={index} className='list-table-format'>
-                            <img src={`${url}/images/` + item.image} alt="" />
-                            <p>{item.name}</p>
-                            <p>{item.category.name}</p>
-                            <p>{item.price}</p>
-                            <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
-                        </div>
-                    );
-                })}
+                {currentItems.map((item, index) => (
+                    <div key={index} className='list-table-format'>
+                        <img src={`${url}/images/` + item.image} alt={item.name} />
+                        <p>{item.name}</p>
+                        <p>{item.category ? item.category.name : ''}</p>
+                        <p>{item.price}</p>
+                        <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                    </div>
+                ))}
             </div>
             {/* Pagination Controls */}
             <div className="pagination">
