@@ -9,10 +9,12 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Countries from './pages/Countries/Countries'
 import AddCountry from './pages/AddCountry/AddCountry'
+import Categories from './pages/Categories/Categories'
+import AddCategory from './pages/AddCategory/AddCategory'
 
 const App = () => {
-
   const url = "http://localhost:4000"
+  
   return (
     <div>
       <ToastContainer />
@@ -26,6 +28,8 @@ const App = () => {
           <Route path='/orders' element={<Orders url={url} />} />
           <Route path='/countries' element={<Countries url={url} />} />
           <Route path='/add-country' element={<AddCountry url={url} />} />
+          <Route path='/categories' element={<Categories url={url} />} />
+          <Route path='/add-category' element={<AddCategory url={url} />} />
         </Routes>
       </div>
     </div>

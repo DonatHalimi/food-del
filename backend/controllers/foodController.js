@@ -5,6 +5,14 @@ import fs from 'fs'
 const addFood = async (req, res) => {
     let image_filename = `${req.file.filename}`
 
+    console.log('Incoming food data:', {
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        category: req.body.category, 
+        image: image_filename
+    });
+
     const food = new foodModel({
         name: req.body.name,
         description: req.body.description,
@@ -17,19 +25,19 @@ const addFood = async (req, res) => {
         await food.save()
         res.json({ success: true, message: "Food added successfully" })
     } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: 'Error adding food' })
+        console.log('Error in addFood:', error)
+        res.status(500).json({ success: false, message: 'Error adding food' })
     }
 }
 
 // list food items
 const listFood = async (req, res) => {
     try {
-        const foods = await foodModel.find({})
+        const foods = await foodModel.find({}).populate('category', 'name description')
         res.json({ success: true, data: foods })
     } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: 'Error listing food items' })
+        console.log('Error in listFood:', error)
+        res.status(500).json({ success: false, message: 'Error listing food items' })
     }
 }
 
@@ -42,8 +50,8 @@ const removeFood = async (req, res) => {
         await foodModel.findByIdAndDelete(req.body.id)
         res.json({ success: true, message: 'Food removed successfully' })
     } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: 'Error removing food' })
+        console.log('Error in removeFood:', error)
+        res.status(500).json({ success: false, message: 'Error removing food' })
     }
 }
 

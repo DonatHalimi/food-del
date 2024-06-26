@@ -50,7 +50,11 @@ body::-webkit-scrollbar-corner {
   margin: auto;
 }
 
-img{
+img {
+  user-select: none;
+}
+
+button {
   user-select: none;
 }
 

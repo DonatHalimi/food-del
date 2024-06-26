@@ -8,6 +8,8 @@ const StoreContextProvider = (props) => {
     const url = "http://localhost:4000";
     const [token, setToken] = useState("");
     const [food_list, setFoodList] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("All");
 
     const addToCart = (itemId) => {
         setCartItems((prev) => ({
@@ -47,20 +49,34 @@ const StoreContextProvider = (props) => {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get(url + "/api/category/list");
+            if (response.data.success) {
+                setCategories(response.data.data);
+            } else {
+                console.error('Failed to fetch categories:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error.message);
+        }
+    };
+
     const loadCartData = async (token) => {
         try {
             const response = await axios.get(url + "/api/cart/get", { headers: { token }, });
             if (response.data && response.data.cartData) {
-                setCartItems(response.data.cartData)
+                setCartItems(response.data.cartData);
             }
         } catch (error) {
-            console.error("Failed to load cart data:", error)
+            console.error("Failed to load cart data:", error);
         }
     };
 
     useEffect(() => {
         async function loadData() {
             await fetchFoodList();
+            await fetchCategories();
             const savedToken = localStorage.getItem("token");
             if (savedToken) {
                 setToken(savedToken);
@@ -82,6 +98,9 @@ const StoreContextProvider = (props) => {
         addToCart,
         removeFromCart,
         getTotalCartAmount,
+        categories,
+        selectedCategory,
+        setSelectedCategory,
         url,
         token,
         setToken,

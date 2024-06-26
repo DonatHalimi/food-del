@@ -1,27 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './Add.css'
-import { assets } from '../../assets/assets'
-import axios from 'axios'
-import { toast } from 'react-toastify'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Add.css';
+import { assets } from '../../assets/assets';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Add = ({ url }) => {
-    const [image, setImage] = useState(false)
+    const [image, setImage] = useState(false);
     const [data, setData] = useState({
         name: "",
         description: "",
         price: "",
-        category: "Salad"
-    })
-
+        category: "" 
+    });
+    const [categories, setCategories] = useState([]); 
     const navigate = useNavigate();
 
-    const onChangeHandler = (event) => {
-        const name = event.target.name
-        const value = event.target.value
+    // Fetch categories from backend
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${url}/api/category/list`);
+                if (response.data.success) {
+                    setCategories(response.data.data); 
+                    if (response.data.data.length > 0) {
+                        setData(prev => ({
+                            ...prev,
+                            category: response.data.data[0]._id 
+                        }));
+                    }
+                } else {
+                    toast.error(response.data.message);
+                    console.error('Failed to fetch categories:', response.data.message);
+                }
+            } catch (error) {
+                toast.error('Error while fetching categories');
+                console.error('Error while fetching categories:', error);
+            }
+        };
 
-        setData(data => ({ ...data, [name]: value }))
-    }
+        fetchCategories();
+    }, [url]);
+
+    const onChangeHandler = (event) => {
+        const { name, value } = event.target;
+        setData(prev => ({ ...prev, [name]: value }));
+    };
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();
@@ -40,7 +64,7 @@ const Add = ({ url }) => {
                     name: "",
                     description: "",
                     price: "",
-                    category: "Salad"
+                    category: categories.length > 0 ? categories[0]._id : "" 
                 });
                 setImage(false);
                 toast.success(response.data.message, {
@@ -60,10 +84,10 @@ const Add = ({ url }) => {
     useEffect(() => {
         return () => {
             if (image) {
-                URL.revokeObjectURL(image)
+                URL.revokeObjectURL(image);
             }
-        }
-    }, [image])
+        };
+    }, [image]);
 
     return (
         <div className='add'>
@@ -87,14 +111,9 @@ const Add = ({ url }) => {
                     <div className="add-category flex-col">
                         <p>Product category</p>
                         <select onChange={onChangeHandler} name="category" value={data.category}>
-                            <option value="Salad">Salad</option>
-                            <option value="Rolls">Rolls</option>
-                            <option value="Deserts">Deserts</option>
-                            <option value="Sandwich">Sandwich</option>
-                            <option value="Cake">Cake</option>
-                            <option value="Pure Veg">Pure Veg</option>
-                            <option value="Pasta">Pasta</option>
-                            <option value="Noodles">Noodles</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat._id}>{cat.name}</option>
+                            ))}
                         </select>
                     </div>
                     <div className="add-price flex-col">
@@ -105,7 +124,7 @@ const Add = ({ url }) => {
                 <button type='submit' className='add-btn'>ADD</button>
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default Add
+export default Add;

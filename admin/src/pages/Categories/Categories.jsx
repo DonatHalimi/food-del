@@ -1,29 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import './List.css';
+import './Categories.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import { BsTrash3 } from 'react-icons/bs';
+import { menu_list } from '../../../../frontend/src/assets/assets';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from 'docx';
 
-const List = ({ url }) => {
+const Categories = ({ url }) => {
     const [list, setList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [foodIdToDelete, setFoodIdToDelete] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(15);
+    const [itemsPerPage] = useState(10);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+
+    const categories = menu_list.map(item => ({
+        name: item.menu_name,
+        image: item.menu_image
+    }));
 
     useEffect(() => {
-        fetchList();
+        fetchCategories();
     }, []);
 
-    const fetchList = async () => {
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedCategory]);
+
+    const fetchCategories = async () => {
         try {
-            const response = await axios.get(`${url}/api/food/list`);
+            const response = await axios.get(`${url}/api/category/list`);
             if (response.data.success) {
                 setList(response.data.data);
             } else {
@@ -37,8 +48,8 @@ const List = ({ url }) => {
 
     const removeFood = async () => {
         try {
-            const response = await axios.post(`${url}/api/food/remove`, { id: foodIdToDelete });
-            await fetchList();
+            const response = await axios.post(`${url}/api/category/remove`, { id: foodIdToDelete });
+            await fetchCategories();
             setIsModalOpen(false);
 
             if (response.data.success) {
@@ -61,6 +72,10 @@ const List = ({ url }) => {
         setIsModalOpen(false);
     };
 
+    const handleCategoryClick = (categoryName) => {
+        setSelectedCategory(prevCategory => prevCategory === categoryName ? 'All' : categoryName);
+    };
+
     const downloadPDF = () => {
         const doc = new jsPDF();
         const tableColumn = ["Item", "Name", "Category", "Price"];
@@ -70,7 +85,7 @@ const List = ({ url }) => {
             const itemData = [
                 item.image,
                 item.name,
-                item.category.name, // Accessing category name
+                item.category,
                 item.price
             ];
             tableRows.push(itemData);
@@ -82,11 +97,7 @@ const List = ({ url }) => {
     };
 
     const downloadExcel = () => {
-        const formattedList = list.map(item => ({
-            ...item,
-            category: item.category.name,
-        }));
-        const worksheet = XLSX.utils.json_to_sheet(formattedList);
+        const worksheet = XLSX.utils.json_to_sheet(list);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Food List");
         XLSX.writeFile(workbook, "food_list.xlsx");
@@ -98,7 +109,7 @@ const List = ({ url }) => {
                 children: [
                     new TableCell({ children: [new Paragraph(item.image)] }),
                     new TableCell({ children: [new Paragraph(item.name)] }),
-                    new TableCell({ children: [new Paragraph(item.category.name)] }), 
+                    new TableCell({ children: [new Paragraph(item.category)] }),
                     new TableCell({ children: [new Paragraph(item.price)] })
                 ]
             })
@@ -131,11 +142,14 @@ const List = ({ url }) => {
         saveAs(blob, "food_list.docx");
     };
 
+    // Filtered list based on category
+    const filteredList = selectedCategory === 'All' ? list : list.filter(item => item.category === selectedCategory);
+
     // Pagination
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = list.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(list.length / itemsPerPage);
+    const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredList.length / itemsPerPage);
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -156,7 +170,7 @@ const List = ({ url }) => {
     return (
         <div className='list add'>
             <div className='list-title'>
-                <p>All Foods List</p>
+                <p>All Categories List</p>
                 <div className="download-buttons">
                     <button onClick={downloadPDF}>Export PDF</button>
                     <button onClick={downloadExcel}>Export Excel</button>
@@ -167,22 +181,17 @@ const List = ({ url }) => {
                 <div className="list-table-format title">
                     <b>Item</b>
                     <b>Name</b>
-                    <b>Category</b>
-                    <b>Price</b>
+                    <b>Description</b>
                     <b>Action</b>
                 </div>
-                {currentItems.map((item, index) => {
-                    console.log(item);
-                    return (
-                        <div key={index} className='list-table-format'>
-                            <img src={`${url}/images/` + item.image} alt="" />
-                            <p>{item.name}</p>
-                            <p>{item.category.name}</p>
-                            <p>{item.price}</p>
-                            <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
-                        </div>
-                    );
-                })}
+                {currentItems.map((item, index) => (
+                    <div key={index} className='list-table-format'>
+                        <img src={`${url}/images/` + item.image} alt="" />
+                        <p>{item.name}</p>
+                        <p>{item.description}</p>
+                        <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                    </div>
+                ))}
             </div>
             {/* Pagination Controls */}
             <div className="pagination">
@@ -203,4 +212,4 @@ const List = ({ url }) => {
     );
 };
 
-export default List;
+export default Categories;

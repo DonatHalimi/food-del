@@ -1,7 +1,7 @@
 import express from 'express'
 import { addFood, listFood, removeFood } from '../controllers/foodController.js'
+import { listCategories } from '../controllers/categoryController.js'
 import multer from 'multer'
-
 
 const foodRouter = express.Router();
 
@@ -19,5 +19,7 @@ foodRouter.post("/add", upload.single("image"), addFood)
 foodRouter.get("/list", listFood)
 foodRouter.post("/remove", removeFood)
 
+// Category routes
+foodRouter.get('/category/list', listCategories);
 
 export default foodRouter;
