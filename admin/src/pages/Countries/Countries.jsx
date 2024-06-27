@@ -3,18 +3,28 @@ import './Countries.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
-import { BsTrash3 } from 'react-icons/bs';
+import { BsTrash3, BsPencil } from 'react-icons/bs';
 
 const Countries = ({ url }) => {
     const [list, setList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [countryIdToDelete, setCountryIdToDelete] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [countryToEdit, setCountryToEdit] = useState({ id: '', name: '' });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
 
     useEffect(() => {
         fetchCountries();
     }, []);
+
+    useEffect(() => {
+        if (isEditModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [isEditModalOpen]);
 
     const fetchCountries = async () => {
         try {
@@ -56,6 +66,32 @@ const Countries = ({ url }) => {
         setIsModalOpen(false);
     };
 
+    const openEditModal = (country) => {
+        setCountryToEdit(country);
+        setIsEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+    };
+
+    const editCountry = async () => {
+        try {
+            const response = await axios.post(`${url}/api/country/edit`, countryToEdit);
+            await fetchCountries();
+            setIsEditModalOpen(false);
+
+            if (response.data.success) {
+                toast.success(response.data.message);
+            } else {
+                toast.error("Error while updating country");
+            }
+        } catch (error) {
+            toast.error("Error while updating country");
+            console.error('Error while updating country:', error);
+        }
+    };
+
     // Pagination
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -86,12 +122,15 @@ const Countries = ({ url }) => {
             <div className="country-table">
                 <div className="country-table-format title">
                     <b>Name</b>
-                    <b>Action</b>
+                    <b>Actions</b>
                 </div>
                 {currentItems.map((item, index) => (
                     <div key={index} className='country-table-format'>
                         <p>{item.name}</p>
-                        <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                        <div className='actions'>
+                            <p onClick={() => openEditModal(item)} className='cursor'><BsPencil /></p>
+                            <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -110,6 +149,22 @@ const Countries = ({ url }) => {
                 onClose={closeModal}
                 onConfirm={removeCountry}
             />
+            {isEditModalOpen && (
+                <div className="edit-modal">
+                    <div className="edit-modal-content">
+                        <h2>Edit Country</h2>
+                        <input
+                            type="text"
+                            value={countryToEdit.name}
+                            onChange={(e) => setCountryToEdit({ ...countryToEdit, name: e.target.value })}
+                        />
+                        <div className="edit-modal-buttons">
+                            <button onClick={closeEditModal} className="edit-modal-button" id='cancel-country'>Cancel</button>
+                            <button onClick={editCountry} className="edit-modal-button" id='save-country'>Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

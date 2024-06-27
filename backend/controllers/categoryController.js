@@ -56,4 +56,33 @@ const removeCategory = async (req, res) => {
     }
 }
 
-export { addCategory, listCategories, removeCategory }
+// Edit category item
+const editCategory = async (req, res) => {
+    try {
+        const { _id, name, description } = req.body;
+        let updateData = { name, description };
+
+        // Check if a new image file is provided
+        if (req.file) {
+            // Find the existing category item to delete the old image
+            const existingCategory = await categoryModel.findById(_id);
+            if (existingCategory) {
+                fs.unlink(`uploads/${existingCategory.image}`, () => { });
+            }
+            updateData.image = req.file.filename;
+        }
+
+        const updatedCategory = await categoryModel.findByIdAndUpdate(_id, updateData, { new: true });
+
+        if (!updatedCategory) {
+            return res.status(404).json({ success: false, message: 'Category not found' });
+        }
+
+        res.json({ success: true, message: 'Category updated successfully', category: updatedCategory });
+    } catch (error) {
+        console.log('Error in editCategory:', error);
+        res.status(500).json({ success: false, message: 'Error updating category' });
+    }
+};
+
+export { addCategory, listCategories, removeCategory, editCategory }

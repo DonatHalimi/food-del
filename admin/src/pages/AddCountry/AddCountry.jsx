@@ -36,7 +36,7 @@ const AddCountry = ({ url }) => {
     return (
         <div className='add'>
             <form className='flex-col' onSubmit={onSubmitHandler}>
-                <div className="add-product-name flex-col">
+                <div className="add-country-name">
                     <p>Country name</p>
                     <input onChange={onChangeHandler} value={data.name} type="text" name='name' placeholder='Enter name' required />
                 </div>

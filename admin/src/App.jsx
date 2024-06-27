@@ -1,20 +1,20 @@
-import React from 'react'
-import Navbar from './components/Navbar/Navbar'
-import Sidebar from './components/Sidebar/Sidebar'
-import { Route, Routes } from 'react-router-dom'
-import Add from './pages/Add/Add'
-import List from './pages/List/List'
-import Orders from './pages/Orders/Orders'
+import React from 'react';
+import Navbar from './components/Navbar/Navbar';
+import Sidebar from './components/Sidebar/Sidebar';
+import { Route, Routes } from 'react-router-dom';
+import Add from './pages/Add/Add';
+import List from './pages/List/List';
+import Orders from './pages/Orders/Orders';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Countries from './pages/Countries/Countries'
-import AddCountry from './pages/AddCountry/AddCountry'
-import Categories from './pages/Categories/Categories'
-import AddCategory from './pages/AddCategory/AddCategory'
-import StoreContextProvider from '../../frontend/src/context/StoreContext'
+import Countries from './pages/Countries/Countries';
+import AddCountry from './pages/AddCountry/AddCountry';
+import Categories from './pages/Categories/Categories';
+import AddCategory from './pages/AddCategory/AddCategory';
+import StoreContextProvider from '../../frontend/src/context/StoreContext';
 
 const App = () => {
-  const url = "http://localhost:4000"
+  const url = "http://localhost:4000";
 
   return (
     <StoreContextProvider>
@@ -36,7 +36,7 @@ const App = () => {
         </div>
       </div>
     </StoreContextProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

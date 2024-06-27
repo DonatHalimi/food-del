@@ -68,3 +68,151 @@ img {
 button {
   user-select: none;
 }
+
+.actions {
+  display: flex;
+  gap: 18px;
+}
+
+.edit-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.edit-modal-content h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.edit-food-image {
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-food-image-label {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.edit-food-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.edit-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.edit-modal-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  flex: 1;
+}
+
+.edit-modal-button:hover {
+  background-color: #e0e0e0;
+}
+
+.edit-modal-button#cancel-food,
+.edit-modal-button#cancel-category,
+.edit-modal-button#cancel-country {
+  background-color: #ccc;
+  color: #333;
+  transition: all 0.3s;
+}
+
+.edit-modal-button#cancel-food:hover,
+.edit-modal-button#cancel-category:hover,
+.edit-modal-button#cancel-country:hover {
+  background-color: #bbbbbb;
+}
+
+.edit-modal-button#save-food,
+.edit-modal-button#save-category,
+.edit-modal-button#save-country {
+  background-color: tomato;
+  color: white;
+  transition: all 0.3s;
+}
+
+.edit-modal-button#save-food:hover,
+.edit-modal-button#save-category:hover,
+.edit-modal-button#save-country:hover {
+  background-color: #eb6157;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #333;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-file-upload:hover {
+  background-color: #f1f1f1;
+}
+
+.download-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 7px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.download-buttons button {
+  padding: 8px 10px;
+  background-color: rgb(53, 53, 53);
+  border: 1px solid #e0e0e0;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.6s;
+}
+
+.download-buttons button:hover {
+  background-color: black;
+}

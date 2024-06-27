@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './List.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
-import { BsTrash3 } from 'react-icons/bs';
+import { BsTrash3, BsPencil } from 'react-icons/bs';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import html2canvas from 'html2canvas';
 import { StoreContext } from '../../../../frontend/src/context/StoreContext';
 
 const List = ({ url }) => {
@@ -14,12 +13,24 @@ const List = ({ url }) => {
     const [list, setList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [foodIdToDelete, setFoodIdToDelete] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [foodToEdit, setFoodToEdit] = useState({ id: '', name: '', description: '', price: '', category: '', image: null });
+    const [currentImage, setCurrentImage] = useState('');
+    const [newImagePreview, setNewImagePreview] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(15);
 
     useEffect(() => {
         fetchList();
     }, [selectedCategory]);
+
+    useEffect(() => {
+        if (isEditModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [isEditModalOpen]);
 
     const fetchList = async () => {
         try {
@@ -65,6 +76,76 @@ const List = ({ url }) => {
         setIsModalOpen(false);
     };
 
+    const openEditModal = (food) => {
+        setFoodToEdit({
+            id: food._id,
+            name: food.name,
+            description: food.description,
+            price: food.price,
+            category: food.category._id,
+            image: null
+        });
+        setCurrentImage(`${url}/images/${food.image}`);
+        setNewImagePreview('');
+        setIsEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+    };
+
+    const onEditInputChange = (event) => {
+        const { name, value, files } = event.target;
+        if (files && files[0]) {
+            const file = files[0];
+            setFoodToEdit(prevState => ({
+                ...prevState,
+                [name]: file
+            }));
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setFoodToEdit(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+    };
+
+    const editFood = async () => {
+        const formData = new FormData();
+        formData.append('_id', foodToEdit.id);
+        formData.append('name', foodToEdit.name);
+        formData.append('description', foodToEdit.description);
+        formData.append('price', foodToEdit.price);
+        formData.append('category', foodToEdit.category);
+        if (foodToEdit.image) {
+            formData.append('image', foodToEdit.image);
+        }
+
+        try {
+            const response = await axios.post(`${url}/api/food/edit`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            await fetchList();
+            setIsEditModalOpen(false);
+
+            if (response.data.success) {
+                toast.success(response.data.message);
+            } else {
+                toast.error("Error while updating food");
+            }
+        } catch (error) {
+            toast.error("Error while updating food");
+            console.error('Error while updating food:', error);
+        }
+    };
+
     const downloadPDF = async () => {
         const doc = new jsPDF('p', 'pt', 'a4');
         const tableColumn = ["Item", "Name", "Category", "Price"];
@@ -78,10 +159,10 @@ const List = ({ url }) => {
             return new Promise((resolve, reject) => {
                 img.onload = async () => {
                     const canvas = document.createElement('canvas');
-                    canvas.width = 30; // Fixed width
-                    canvas.height = 30; // Fixed height
+                    canvas.width = 30;
+                    canvas.height = 30;
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 30, 30); // Draw image with fixed size
+                    ctx.drawImage(img, 0, 0, 30, 30);
                     const imgData = canvas.toDataURL('image/png');
 
                     const itemData = [
@@ -104,7 +185,7 @@ const List = ({ url }) => {
             body: tableRows,
             didDrawCell: data => {
                 if (data.column.dataKey === 0 && data.cell.section === 'body') {
-                    doc.addImage(data.cell.raw.image, 'PNG', data.cell.x + 2, data.cell.y + 2, 30, 30); // Add image with fixed size
+                    doc.addImage(data.cell.raw.image, 'PNG', data.cell.x + 2, data.cell.y + 2, 30, 30);
                 }
             }
         });
@@ -187,7 +268,10 @@ const List = ({ url }) => {
                         <p>{item.name}</p>
                         <p>{item.category ? item.category.name : ''}</p>
                         <p>{item.price}</p>
-                        <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                        <div className='actions'>
+                            <p onClick={() => openEditModal(item)} className='cursor'><BsPencil /></p>
+                            <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -206,6 +290,68 @@ const List = ({ url }) => {
                 onClose={closeModal}
                 onConfirm={removeFood}
             />
+            {isEditModalOpen && (
+                <div className="edit-modal">
+                    <div className="edit-modal-content">
+                        <h2>Edit Food</h2>
+                        <input
+                            type="text"
+                            name="name"
+                            value={foodToEdit.name}
+                            onChange={onEditInputChange}
+                            placeholder="Food name"
+                        />
+                        <textarea
+                            name="description"
+                            value={foodToEdit.description}
+                            onChange={onEditInputChange}
+                            placeholder="Description"
+                        />
+                        <input
+                            type="number"
+                            name="price"
+                            value={foodToEdit.price}
+                            onChange={onEditInputChange}
+                            placeholder="Price"
+                        />
+                        <select
+                            name="category"
+                            value={foodToEdit.category}
+                            onChange={onEditInputChange}
+                        >
+                            {categories.map(category => (
+                                <option key={category._id} value={category._id}>{category.name}</option>
+                            ))}
+                        </select>
+                        <div className="edit-food-image">
+                            <p>Current Image</p>
+                            <img src={currentImage} alt="Current food" />
+                        </div>
+                        <div className="edit-food-image">
+                            <p>New Image</p>
+                            <label className="custom-file-upload">
+                                <input
+                                    type="file"
+                                    name="image"
+                                    onChange={onEditInputChange}
+                                    accept="image/*"
+                                />
+                                Choose File
+                            </label>
+                            {newImagePreview && (
+                                <>
+                                    <p>Preview</p>
+                                    <img src={newImagePreview} alt="New preview" />
+                                </>
+                            )}
+                        </div>
+                        <div className="edit-modal-buttons">
+                            <button onClick={closeEditModal} className="edit-modal-button" id='cancel-food'>Cancel</button>
+                            <button onClick={editFood} className="edit-modal-button" id='save-food'>Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

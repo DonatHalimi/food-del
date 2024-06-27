@@ -47,4 +47,33 @@ const removeFood = async (req, res) => {
     }
 }
 
-export { addFood, listFood, removeFood }
+// edit food item
+const editFood = async (req, res) => {
+    try {
+        const { _id, name, description, price, category } = req.body;
+        let updateData = { name, description, price, category };
+
+        // Check if a new image file is provided
+        if (req.file) {
+            // Find the existing food item to delete the old image
+            const existingFood = await foodModel.findById(_id);
+            if (existingFood) {
+                fs.unlink(`uploads/${existingFood.image}`, () => { });
+            }
+            updateData.image = req.file.filename;
+        }
+
+        const updatedFood = await foodModel.findByIdAndUpdate(_id, updateData, { new: true });
+
+        if (!updatedFood) {
+            return res.status(404).json({ success: false, message: 'Food not found' });
+        }
+
+        res.json({ success: true, message: 'Food updated successfully', food: updatedFood });
+    } catch (error) {
+        console.log('Error in editFood:', error);
+        res.status(500).json({ success: false, message: 'Error updating food' });
+    }
+}
+
+export { addFood, listFood, removeFood, editFood };

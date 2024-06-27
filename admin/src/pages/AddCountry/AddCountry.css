@@ -10,16 +10,17 @@
     gap: 20px;
 }
 
-.add-product-name {
-    width: max(40%, 280px);
+.add-country-name {
+    width: max(20%, 280px);
 }
 
-.add-product-name input {
+.add-country-name input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
     color: #333;
+    margin-top: 12px;
 }
 
 .add-btn {
