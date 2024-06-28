@@ -2,6 +2,9 @@
 
 Welcome to the Food Delivery App! This project is a comprehensive solution for managing a food delivery service, with separate components for the admin panel, frontend, and backend.
 
+### Live Demo
+You can check out the live demo of the Food Delivery App [here](https://food-del-frontend-d926.onrender.com/).
+
 ## Table of Contents
 - [Overview](#overview)
 - [Features](#features)
