@@ -7,11 +7,13 @@ import { BsTrash3, BsPencil } from 'react-icons/bs';
 
 const Cities = ({ url }) => {
     const [cities, setCities] = useState([]);
+    const [filteredCities, setFilteredCities] = useState([]);
     const [countries, setCountries] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [cityIdToDelete, setCityIdToDelete] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [cityToEdit, setCityToEdit] = useState({ _id: '', name: '', country: '', zipcode: '' });
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Pagination state variables
     const [currentPage, setCurrentPage] = useState(1);
@@ -22,11 +24,33 @@ const Cities = ({ url }) => {
         fetchCountries();
     }, []);
 
+    useEffect(() => {
+        if (isEditModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [isEditModalOpen]);
+
+    useEffect(() => {
+        filterCities();
+    }, [searchTerm, cities]);
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.info("City ID copied to clipboard");
+        }, (err) => {
+            toast.error("Failed to copy city ID");
+            console.error("Failed to copy text: ", err);
+        });
+    };
+
     const fetchCities = async () => {
         try {
             const response = await axios.get(`${url}/api/city/list`);
             if (response.data.success) {
                 setCities(response.data.data);
+                setFilteredCities(response.data.data);
             } else {
                 toast.error("Error fetching city list");
             }
@@ -48,6 +72,13 @@ const Cities = ({ url }) => {
             toast.error("Error fetching country list");
             console.error('Error fetching country list:', error);
         }
+    };
+
+    const filterCities = () => {
+        const filtered = cities.filter(city =>
+            city.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredCities(filtered);
     };
 
     const removeCity = async () => {
@@ -118,27 +149,37 @@ const Cities = ({ url }) => {
     // Pagination logic
     const indexOfLastCity = currentPage * itemsPerPage;
     const indexOfFirstCity = indexOfLastCity - itemsPerPage;
-    const currentCities = cities.slice(indexOfFirstCity, indexOfLastCity);
-    const totalPages = Math.ceil(cities.length / itemsPerPage);
+    const currentCities = filteredCities.slice(indexOfFirstCity, indexOfLastCity);
+    const totalPages = Math.ceil(filteredCities.length / itemsPerPage);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     const nextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
     const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
     return (
-        <div className='category add'>
-            <div className='category-title'>
-                <p>All Cities List</p>
+        <div className='city add'>
+            <div className='city-title-container'>
+                <div className='city-title'>
+                    <p>All Cities List</p>
+                </div>
+                <div className='city-search'>
+                    <input
+                        type='text'
+                        placeholder='Search cities...'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
             </div>
-            <div className="category-table">
-                <div className="category-table-format title">
+            <div className="city-table">
+                <div className="city-table-format title">
                     <b>Name</b>
                     <b>Country</b>
                     <b>Zipcode</b>
                     <b>Actions</b>
                 </div>
                 {currentCities.map((city, index) => (
-                    <div key={index} className='category-table-format'>
+                    <div key={index} className='city-table-format'>
                         <p>{city.name}</p>
                         <p>{city.country.name}</p>
                         <p>{city.zipcode}</p>

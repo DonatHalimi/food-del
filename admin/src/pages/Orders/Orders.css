@@ -32,6 +32,26 @@
     outline: none;
 }
 
+/* Orders.css */
+.order-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.order-title h3 {
+    margin: 0;
+}
+
+.order-search input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #a9a9a9;
+    border-radius: 4px;
+}
+
 .pagination-orders {
     display: flex;
     justify-content: start;

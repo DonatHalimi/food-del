@@ -7,6 +7,8 @@ import { BsTrash3, BsPencil } from 'react-icons/bs';
 
 const Countries = ({ url }) => {
     const [list, setList] = useState([]);
+    const [filteredCountries, setFilteredCountries] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [countryIdToDelete, setCountryIdToDelete] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -26,6 +28,10 @@ const Countries = ({ url }) => {
         }
     }, [isEditModalOpen]);
 
+    useEffect(() => {
+        filterCountries();
+    }, [searchTerm, list]);
+
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text).then(() => {
             toast.info("Category ID copied to clipboard");
@@ -40,6 +46,7 @@ const Countries = ({ url }) => {
             const response = await axios.get(`${url}/api/country/list`);
             if (response.data.success) {
                 setList(response.data.countries);
+                setFilteredCountries(response.data.countries);
             } else {
                 toast.error("Error fetching country list");
             }
@@ -47,6 +54,13 @@ const Countries = ({ url }) => {
             toast.error("Error fetching country list");
             console.error('Error fetching country list:', error);
         }
+    };
+
+    const filterCountries = () => {
+        const filtered = list.filter(country =>
+            country.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredCountries(filtered);
     };
 
     const removeCountry = async () => {
@@ -122,8 +136,8 @@ const Countries = ({ url }) => {
     // Pagination
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = list.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(list.length / itemsPerPage);
+    const currentItems = filteredCountries.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredCountries.length / itemsPerPage);
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -143,8 +157,18 @@ const Countries = ({ url }) => {
 
     return (
         <div className='country add'>
-            <div className='country-title'>
-                <p>All Countries List</p>
+            <div className='country-title-container'>
+                <div className='country-title'>
+                    <p>All Countries List</p>
+                </div>
+                <div className='country-search'>
+                    <input
+                        type='text'
+                        placeholder='Search countries...'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
             </div>
             <div className="country-table">
                 <div className="country-table-format title">

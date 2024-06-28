@@ -44,6 +44,33 @@
     cursor: pointer;
 }
 
+/* Countries.css */
+.country-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.country-title p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.country-search {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.country-search input {
+    padding: 10px;
+    border: 1px solid #a9a9a9;
+    border-radius: 4px;
+}
+
 .pagination {
     display: flex;
     justify-content: center;

@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Orders = ({ url }) => {
     const [orders, setOrders] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(6);
 
@@ -63,10 +64,25 @@ const Orders = ({ url }) => {
         fetchAllOrders();
     }, []);
 
+    const filterOrders = (orders) => {
+        return orders.filter(order => {
+            const searchText = searchTerm.toLowerCase();
+            return (
+                order._id.toLowerCase().includes(searchText) ||
+                order.address.firstName.toLowerCase().includes(searchText) ||
+                order.address.lastName.toLowerCase().includes(searchText) ||
+                order.address.street.toLowerCase().includes(searchText) ||
+                order.address.city.name.toLowerCase().includes(searchText) ||
+                order.address.country.name.toLowerCase().includes(searchText) ||
+                order.address.phone.toLowerCase().includes(searchText)
+            );
+        });
+    };
+
     const indexOfLastOrder = currentPage * itemsPerPage;
     const indexOfFirstOrder = indexOfLastOrder - itemsPerPage;
-    const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
-    const totalPages = Math.ceil(orders.length / itemsPerPage);
+    const currentOrders = filterOrders(orders).slice(indexOfFirstOrder, indexOfLastOrder);
+    const totalPages = Math.ceil(filterOrders(orders).length / itemsPerPage);
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -86,7 +102,17 @@ const Orders = ({ url }) => {
 
     return (
         <div className='order add'>
-            <h3>Order Page</h3>
+            <div className='order-title-container'>
+                <h3>Order Page</h3>
+                <div className='order-search'>
+                    <input
+                        type='text'
+                        placeholder='Search orders...'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
             <div className="order-list">
                 {currentOrders.map((order, index) => (
                     <div key={index} className="order-item">
@@ -101,11 +127,11 @@ const Orders = ({ url }) => {
                                     }
                                 })}
                             </p>
-                            <p className='order-item-name'>{`${order.address?.firstName}, ${order.address?.lastName}`}</p>
+                            <p className='order-item-name'>{`${order.address?.firstName} ${order.address?.lastName}`}</p>
                             <div className='order-item-address'>
                                 <p>{order.address.street + ", "}</p>
                                 <div className='order-item-address'>
-                                    <p>{`${order.address.street}, ${order.address.city?.name}, ${order.address.country?.name}, ${order.address.zipcode}`}</p>
+                                    <p>{`${order.address.city?.name}, ${order.address.country?.name}, ${order.address.zipcode}`}</p>
                                 </div>
                             </div>
                             <p className='order-item-phone'>{order.address.phone}</p>
