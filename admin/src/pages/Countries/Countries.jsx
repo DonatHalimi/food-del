@@ -175,15 +175,19 @@ const Countries = ({ url }) => {
                     <b>Name</b>
                     <b>Actions</b>
                 </div>
-                {currentItems.map((item, index) => (
-                    <div key={index} className='country-table-format'>
-                        <p>{item.name}</p>
-                        <div className='actions'>
-                            <p onClick={() => openEditModal(item)} className='cursor'><BsPencil /></p>
-                            <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                {currentItems.length > 0 ? (
+                    currentItems.map((item, index) => (
+                        <div key={index} className='country-table-format'>
+                            <p>{item.name}</p>
+                            <div className='actions'>
+                                <p onClick={() => openEditModal(item)} className='cursor'><BsPencil /></p>
+                                <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <p>No country found</p>
+                )}
             </div>
             {/* Pagination Controls */}
             <div className="pagination">

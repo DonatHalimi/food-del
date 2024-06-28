@@ -40,7 +40,6 @@
     font-weight: bold;
 }
 
-/* Cities.css */
 .city-title-container {
     display: flex;
     align-items: center;
@@ -54,7 +53,6 @@
     font-weight: 600;
     color: #262626;
     margin-right: 20px;
-    /* Add some space between the title and the search input */
 }
 
 .city-search {

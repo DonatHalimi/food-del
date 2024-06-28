@@ -178,17 +178,21 @@ const Cities = ({ url }) => {
                     <b>Zipcode</b>
                     <b>Actions</b>
                 </div>
-                {currentCities.map((city, index) => (
-                    <div key={index} className='city-table-format'>
-                        <p>{city.name}</p>
-                        <p>{city.country.name}</p>
-                        <p>{city.zipcode}</p>
-                        <div className='actions'>
-                            <p onClick={() => openEditModal(city)} className='cursor'><BsPencil /></p>
-                            <p onClick={() => openModal(city._id)} className='cursor'><BsTrash3 /></p>
+                {currentCities.length > 0 ? (
+                    currentCities.map((city, index) => (
+                        <div key={index} className='city-table-format'>
+                            <p>{city.name}</p>
+                            <p>{city.country.name}</p>
+                            <p>{city.zipcode}</p>
+                            <div className='actions'>
+                                <p onClick={() => openEditModal(city)} className='cursor'><BsPencil /></p>
+                                <p onClick={() => openModal(city._id)} className='cursor'><BsTrash3 /></p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <p>No city found</p>
+                )}
             </div>
             <div className="pagination">
                 <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
