@@ -26,6 +26,15 @@ const Countries = ({ url }) => {
         }
     }, [isEditModalOpen]);
 
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.info("Category ID copied to clipboard");
+        }, (err) => {
+            toast.error("Failed to copy category ID");
+            console.error("Failed to copy text: ", err);
+        });
+    };
+
     const fetchCountries = async () => {
         try {
             const response = await axios.get(`${url}/api/country/list`);
@@ -47,12 +56,21 @@ const Countries = ({ url }) => {
             setIsModalOpen(false);
 
             if (response.data.success) {
-                toast.success(response.data.message);
+                toast.success(response.data.message, {
+                    closeOnClick: true
+                });
             } else {
-                toast.error("Error while deleting country");
+                toast.error("Error while deleting country", {
+                    closeOnClick: true
+                });
             }
         } catch (error) {
-            toast.error("Error while deleting country");
+            toast.error("Error deleting country for country ID: " + countryIdToDelete, {
+                onClick: () => copyToClipboard(countryIdToDelete),
+                style: {
+                    cursor: "pointer"
+                }
+            });
             console.error('Error while deleting country:', error);
         }
     };
@@ -82,12 +100,21 @@ const Countries = ({ url }) => {
             setIsEditModalOpen(false);
 
             if (response.data.success) {
-                toast.success(response.data.message);
+                toast.success(response.data.message, {
+                    closeOnClick: true
+                });
             } else {
-                toast.error("Error while updating country");
+                toast.error("Error while updating country", {
+                    closeOnClick: true
+                });
             }
         } catch (error) {
-            toast.error("Error while updating country");
+            toast.error("Error updating country for country ID: " + countryIdToDelete, {
+                onClick: () => copyToClipboard(countryIdToDelete),
+                style: {
+                    cursor: "pointer"
+                }
+            });
             console.error('Error while updating country:', error);
         }
     };

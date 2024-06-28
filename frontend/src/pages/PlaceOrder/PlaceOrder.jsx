@@ -16,7 +16,6 @@ const PlaceOrder = () => {
         email: "",
         street: "",
         city: "",
-        state: "",
         zipcode: "",
         country: "",
         phone: "",
@@ -39,9 +38,33 @@ const PlaceOrder = () => {
         }
     };
 
+    const formatPhoneNumber = (value) => {
+        // Remove non-numeric characters
+        const cleaned = value.replace(/\D/g, '');
+        
+        // Check the prefix and limit length
+        const prefix = cleaned.slice(0, 3);
+        if (!['044', '045', '049'].includes(prefix)) return value;
+
+        // Format the number
+        let formatted = prefix;
+        if (cleaned.length > 3) {
+            formatted += '-' + cleaned.slice(3, 6);
+        }
+        if (cleaned.length > 6) {
+            formatted += '-' + cleaned.slice(6, 9);
+        }
+        
+        return formatted;
+    };
+
     const onChangeHandler = (event) => {
         const name = event.target.name;
-        const value = event.target.value;
+        let value = event.target.value;
+
+        if (name === 'phone') {
+            value = formatPhoneNumber(value);
+        }
 
         setData(prevData => ({ ...prevData, [name]: value }));
     };
@@ -92,19 +115,18 @@ const PlaceOrder = () => {
                 <input required name="email" onChange={onChangeHandler} value={data.email} type="email" placeholder='Email address' />
                 <input required name="street" onChange={onChangeHandler} value={data.street} type="text" placeholder='Street' />
                 <div className="multi-fields">
-                    <input required name="city" onChange={onChangeHandler} value={data.city} type="text" placeholder='City' />
-                    <input required name="state" onChange={onChangeHandler} value={data.state} type="text" placeholder='State' />
-                </div>
-                <div className="multi-fields">
-                    <input required name="zipcode" onChange={onChangeHandler} value={data.zipcode} type="text" placeholder='Zipcode' />
                     <select required name="country" onChange={onChangeHandler} value={data.country}>
                         <option value="" disabled>Select Country</option>
                         {countries.map((country, index) => (
                             <option key={index} value={country.name}>{country.name}</option>
                         ))}
                     </select>
+                    <input required name="city" onChange={onChangeHandler} value={data.city} type="text" placeholder='City' />
                 </div>
-                <input required name="phone" onChange={onChangeHandler} value={data.phone} type="text" placeholder='Phone' />
+                <div className="multi-fields">
+                    <input required name="zipcode" onChange={onChangeHandler} value={data.zipcode} type="text" placeholder='Zipcode' />
+                    <input required name="phone" onChange={onChangeHandler} value={data.phone} type="text" placeholder='Phone' />
+                </div>
             </div>
             <div className="place-order-right">
                 <div className="cart-total">

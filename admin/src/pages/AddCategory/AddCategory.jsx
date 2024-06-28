@@ -37,7 +37,7 @@ const AddCategory = ({ url }) => {
                 setImage(false);
                 toast.success(response.data.message, {
                     style: { cursor: 'pointer' },
-                    onClick: () => navigate('/list')
+                    onClick: () => navigate('/categories')
                 });
             } else {
                 toast.error(response.data.message);

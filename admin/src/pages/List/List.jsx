@@ -32,6 +32,15 @@ const List = ({ url }) => {
         }
     }, [isEditModalOpen]);
 
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.info("Category ID copied to clipboard");
+        }, (err) => {
+            toast.error("Failed to copy category ID");
+            console.error("Failed to copy text: ", err);
+        });
+    };
+
     const fetchList = async () => {
         try {
             const response = await axios.get(`${url}/api/food/list`);
@@ -57,12 +66,21 @@ const List = ({ url }) => {
             setIsModalOpen(false);
 
             if (response.data.success) {
-                toast.success(response.data.message);
+                toast.success(response.data.message, {
+                    closeOnClick: true
+                });
             } else {
-                toast.error("Error while deleting product");
+                toast.error(response.data.message, {
+                    closeOnClick: true
+                });
             }
         } catch (error) {
-            toast.error("Error while deleting product");
+            toast.error("Error removing product for food ID: " + foodIdToDelete, {
+                onClick: () => copyToClipboard(foodIdToDelete),
+                style: {
+                    cursor: "pointer"
+                }
+            });
             console.error('Error while deleting product:', error);
         }
     };
@@ -136,12 +154,21 @@ const List = ({ url }) => {
             setIsEditModalOpen(false);
 
             if (response.data.success) {
-                toast.success(response.data.message);
+                toast.success(response.data.message, {
+                    closeOnClick: true
+                });
             } else {
-                toast.error("Error while updating food");
+                toast.error("Error while updating food", {
+                    closeOnClick: true
+                });
             }
         } catch (error) {
-            toast.error("Error while updating food");
+            toast.error("Error updating product for food: " + foodToEdit, {
+                onClick: () => copyToClipboard(foodToEdit),
+                style: {
+                    cursor: "pointer"
+                }
+            });
             console.error('Error while updating food:', error);
         }
     };

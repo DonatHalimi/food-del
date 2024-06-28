@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './Orders.css';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { assets } from '../../assets/assets';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Orders = ({ url }) => {
     const [orders, setOrders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(6); 
+    const [itemsPerPage] = useState(6);
 
     const fetchAllOrders = async () => {
         try {
@@ -23,18 +24,38 @@ const Orders = ({ url }) => {
         }
     };
 
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.info("Order ID copied to clipboard");
+        }, (err) => {
+            toast.error("Failed to copy order ID");
+            console.error("Failed to copy text: ", err);
+        });
+    };
+
     const statusHandler = async (event, orderId) => {
         const status = event.target.value;
         try {
             const response = await axios.post(url + "/api/order/status", { orderId, status });
             if (response.data.success) {
                 await fetchAllOrders();
-                toast.success(response.data.message);
+                toast.success(`Changed order status for order ID: ${orderId}`, {
+                    onClick: () => copyToClipboard(orderId),
+                    style: {
+                        cursor: "pointer"
+                    }
+                }
+                );
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
-            toast.error("Error updating order status");
+            toast.error(`Error updating order status for order ID: ${orderId}`, {
+                onClick: () => copyToClipboard(orderId),
+                style: {
+                    cursor: "pointer"
+                }
+            });
             console.error("Error updating order status:", error);
         }
     };
@@ -85,7 +106,7 @@ const Orders = ({ url }) => {
                             <p className='order-item-name'>{order.address.firstName + " " + order.address.lastName}</p>
                             <div className='order-item-address'>
                                 <p>{order.address.street + ", "}</p>
-                                <p>{order.address.city + ", " + order.address.state + ", " + order.address.country + ", " + order.address.zipcode}</p>
+                                <p>{order.address.city + ", " + order.address.country + ", " + order.address.zipcode}</p>
                             </div>
                             <p className='order-item-phone'>{order.address.phone}</p>
                         </div>
@@ -109,6 +130,7 @@ const Orders = ({ url }) => {
                 ))}
                 <button className="pagination-orders-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
             </div>
+            <ToastContainer />
         </div>
     );
 };

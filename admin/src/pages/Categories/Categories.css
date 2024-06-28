@@ -49,6 +49,10 @@
     cursor: pointer;
 }
 
+#category-edit-desc {
+    height: 165px;
+}
+
 .pagination {
     display: flex;
     justify-content: center;

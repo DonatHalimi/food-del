@@ -30,6 +30,14 @@ const Categories = ({ url }) => {
         }
     }, [isEditModalOpen]);
 
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.info("Category ID copied to clipboard");
+        }, (err) => {
+            toast.error("Failed to copy category ID");
+            console.error("Failed to copy text: ", err);
+        });
+    };
 
     const fetchCategories = async () => {
         try {
@@ -52,12 +60,21 @@ const Categories = ({ url }) => {
             setIsModalOpen(false);
 
             if (response.data.success) {
-                toast.success(response.data.message);
+                toast.success(response.data.message, {
+                    closeOnClick: true
+                });
             } else {
-                toast.error(response.data.message);
+                toast.error(response.data.message, {
+                    closeOnClick: true
+                });
             }
         } catch (error) {
-            toast.error("Error while deleting product");
+            toast.error("Error removing category for category ID: " + categoryIdToDelete, {
+                onClick: () => copyToClipboard(categoryIdToDelete),
+                style: {
+                    cursor: "pointer"
+                }
+            });
             console.error('Error while deleting product:', error);
         }
     };
@@ -128,13 +145,21 @@ const Categories = ({ url }) => {
             setIsEditModalOpen(false);
 
             if (response.data.success) {
-                toast.success(response.data.message);
+                toast.success(response.data.message, {
+                    closeOnClick: true
+                });
             } else {
-                toast.error("Error while updating category");
+                toast.error(response.data.message, {
+                    closeOnClick: true
+                });
             }
         } catch (error) {
-            toast.error("Error while updating category");
-            console.error('Error while updating category:', error);
+            toast.error("Error updating category for category: " + categoryToEdit, {
+                onClick: () => copyToClipboard(categoryToEdit),
+                style: {
+                    cursor: "pointer"
+                }
+            }); console.error('Error while updating category:', error);
         }
     };
 
@@ -270,6 +295,7 @@ const Categories = ({ url }) => {
                             value={categoryToEdit.description}
                             onChange={onEditInputChange}
                             placeholder="Description"
+                            id='category-edit-desc'
                         />
                         <div className="edit-food-image">
                             <p>Current Image</p>
