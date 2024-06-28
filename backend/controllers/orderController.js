@@ -13,11 +13,19 @@ const placeOrder = async (req, res) => {
             userId: req.body.userId,
             items: req.body.items,
             amount: req.body.amount,
-            address: req.body.address,
-        })
+            address: {
+                firstName: req.body.address.firstName,
+                lastName: req.body.address.lastName,
+                street: req.body.address.street,
+                city: req.body.address.city,
+                country: req.body.address.country,
+                zipcode: req.body.address.zipcode,
+                phone: req.body.address.phone
+            }
+        });
 
-        await newOrder.save()
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} })
+        await newOrder.save();
+        await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
 
         const line_items = req.body.items.map((item) => ({
             price_data: {
@@ -28,7 +36,7 @@ const placeOrder = async (req, res) => {
                 unit_amount: item.price * 100
             },
             quantity: item.quantity
-        }))
+        }));
 
         line_items.push({
             price_data: {
@@ -39,21 +47,21 @@ const placeOrder = async (req, res) => {
                 unit_amount: 2 * 100
             },
             quantity: 1
-        })
+        });
 
         const session = await stripe.checkout.sessions.create({
             line_items: line_items,
             mode: 'payment',
             success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
             cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
-        })
+        });
 
-        res.json({ success: true, session_url: session.url })
+        res.json({ success: true, session_url: session.url });
     } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: 'Error placing order' })
+        console.log(error);
+        res.json({ success: false, message: 'Error placing order' });
     }
-}
+};
 
 const verifyOrder = async (req, res) => {
     const { orderId, success } = req.body
@@ -86,10 +94,10 @@ const getUserOrders = async (req, res) => {
 // listing orders for admin panel
 const listOrders = async (req, res) => {
     try {
-        const orders = await orderModel.find({})
+        const orders = await orderModel.find({}).populate('address.city').populate('address.country');
         res.json({ success: true, data: orders })
     } catch (error) {
-        console.log(error)
+        console.log("Error fetching orders:", error);
         res.json({ success: false, message: 'Error' })
     }
 }

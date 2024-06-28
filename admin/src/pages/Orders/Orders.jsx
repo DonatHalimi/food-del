@@ -44,8 +44,7 @@ const Orders = ({ url }) => {
                     style: {
                         cursor: "pointer"
                     }
-                }
-                );
+                });
             } else {
                 toast.error(response.data.message);
             }
@@ -64,7 +63,6 @@ const Orders = ({ url }) => {
         fetchAllOrders();
     }, []);
 
-    // Pagination logic
     const indexOfLastOrder = currentPage * itemsPerPage;
     const indexOfFirstOrder = indexOfLastOrder - itemsPerPage;
     const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
@@ -103,10 +101,12 @@ const Orders = ({ url }) => {
                                     }
                                 })}
                             </p>
-                            <p className='order-item-name'>{order.address.firstName + " " + order.address.lastName}</p>
+                            <p className='order-item-name'>{`${order.address?.firstName}, ${order.address?.lastName}`}</p>
                             <div className='order-item-address'>
                                 <p>{order.address.street + ", "}</p>
-                                <p>{order.address.city + ", " + order.address.country + ", " + order.address.zipcode}</p>
+                                <div className='order-item-address'>
+                                    <p>{`${order.address.street}, ${order.address.city?.name}, ${order.address.country?.name}, ${order.address.zipcode}`}</p>
+                                </div>
                             </div>
                             <p className='order-item-phone'>{order.address.phone}</p>
                         </div>
@@ -120,7 +120,6 @@ const Orders = ({ url }) => {
                     </div>
                 ))}
             </div>
-            {/* Pagination Controls */}
             <div className="pagination-orders">
                 <button className="pagination-orders-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
                 {Array.from({ length: totalPages }, (_, index) => (

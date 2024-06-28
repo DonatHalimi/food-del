@@ -36,6 +36,14 @@ const Sidebar = () => {
                     <img src={assets.order_icon} alt="" />
                     <p>Countries</p>
                 </NavLink>
+                <NavLink to='/add-city' className="sidebar-option">
+                    <img src={assets.add_icon} alt="" />
+                    <p>Add City</p>
+                </NavLink>
+                <NavLink to='/cities' className="sidebar-option">
+                    <img src={assets.order_icon} alt="" />
+                    <p>Cities</p>
+                </NavLink>
             </div>
         </div>
     )

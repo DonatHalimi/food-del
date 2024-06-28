@@ -121,13 +121,10 @@ button {
   flex: 1;
 }
 
-.edit-modal-button:hover {
-  background-color: #e0e0e0;
-}
-
 .edit-modal-button#cancel-food,
 .edit-modal-button#cancel-category,
-.edit-modal-button#cancel-country {
+.edit-modal-button#cancel-country,
+.edit-modal-button#cancel-city {
   background-color: #ccc;
   color: #333;
   transition: all 0.3s;
@@ -135,13 +132,15 @@ button {
 
 .edit-modal-button#cancel-food:hover,
 .edit-modal-button#cancel-category:hover,
-.edit-modal-button#cancel-country:hover {
+.edit-modal-button#cancel-country:hover,
+.edit-modal-button#cancel-city:hover {
   background-color: #bbbbbb;
 }
 
 .edit-modal-button#save-food,
 .edit-modal-button#save-category,
-.edit-modal-button#save-country {
+.edit-modal-button#save-country,
+.edit-modal-button#save-city {
   background-color: tomato;
   color: white;
   transition: all 0.3s;
@@ -149,7 +148,8 @@ button {
 
 .edit-modal-button#save-food:hover,
 .edit-modal-button#save-category:hover,
-.edit-modal-button#save-country:hover {
+.edit-modal-button#save-country:hover,
+.edit-modal-button#save-city:hover {
   background-color: #eb6157;
 }
 

@@ -163,8 +163,8 @@ const List = ({ url }) => {
                 });
             }
         } catch (error) {
-            toast.error("Error updating product for food: " + foodToEdit, {
-                onClick: () => copyToClipboard(foodToEdit),
+            toast.error("Error updating product for food: " + foodToEdit._id, {
+                onClick: () => copyToClipboard(foodToEdit._id),
                 style: {
                     cursor: "pointer"
                 }

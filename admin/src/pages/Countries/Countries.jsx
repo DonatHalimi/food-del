@@ -65,8 +65,8 @@ const Countries = ({ url }) => {
                 });
             }
         } catch (error) {
-            toast.error("Error deleting country for country ID: " + countryIdToDelete, {
-                onClick: () => copyToClipboard(countryIdToDelete),
+            toast.error("Error deleting country for country ID: " + countryIdToDelete._id, {
+                onClick: () => copyToClipboard(countryIdToDelete._id),
                 style: {
                     cursor: "pointer"
                 }

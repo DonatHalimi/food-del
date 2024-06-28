@@ -9,7 +9,7 @@ const PlaceOrder = () => {
     const navigate = useNavigate();
 
     const [countries, setCountries] = useState([]);
-
+    const [cities, setCities] = useState([]);
     const [data, setData] = useState({
         firstName: "",
         lastName: "",
@@ -41,7 +41,7 @@ const PlaceOrder = () => {
     const formatPhoneNumber = (value) => {
         // Remove non-numeric characters
         const cleaned = value.replace(/\D/g, '');
-        
+
         // Check the prefix and limit length
         const prefix = cleaned.slice(0, 3);
         if (!['044', '045', '049'].includes(prefix)) return value;
@@ -54,19 +54,47 @@ const PlaceOrder = () => {
         if (cleaned.length > 6) {
             formatted += '-' + cleaned.slice(6, 9);
         }
-        
+
         return formatted;
     };
 
-    const onChangeHandler = (event) => {
-        const name = event.target.name;
-        let value = event.target.value;
+    const onChangeHandler = async (event) => {
+        const { name, value } = event.target;
 
         if (name === 'phone') {
-            value = formatPhoneNumber(value);
+            const formattedPhone = formatPhoneNumber(value);
+            setData(prevData => ({ ...prevData, [name]: formattedPhone }));
+        } else if (name === 'country') {
+            setData(prevData => ({ ...prevData, [name]: value, city: '', zipcode: '' }));
+            const cities = await getCitiesByCountry(value);
+            setCities(cities);
+        } else if (name === 'city') {
+            const selectedCity = cities.find(city => city._id === value);
+            if (selectedCity) {
+                setData(prevData => ({
+                    ...prevData,
+                    [name]: value,
+                    zipcode: selectedCity.zipcode,
+                }));
+            }
+        } else {
+            setData(prevData => ({ ...prevData, [name]: value }));
         }
+    };
 
-        setData(prevData => ({ ...prevData, [name]: value }));
+    const getCitiesByCountry = async (countryId) => {
+        try {
+            const response = await axios.get(`${url}/api/city/by-country/${countryId}`);
+            if (response.data.success) {
+                return response.data.data; // Assuming response.data.data is an array of cities
+            } else {
+                console.error('Error fetching cities by country');
+                return []; // Return empty array on error or no cities found
+            }
+        } catch (error) {
+            console.error('Error fetching cities by country:', error);
+            return []; // Return empty array on error or no cities found
+        }
     };
 
     const placeOrder = async (event) => {
@@ -118,10 +146,15 @@ const PlaceOrder = () => {
                     <select required name="country" onChange={onChangeHandler} value={data.country}>
                         <option value="" disabled>Select Country</option>
                         {countries.map((country, index) => (
-                            <option key={index} value={country.name}>{country.name}</option>
+                            <option key={index} value={country._id}>{country.name}</option>
                         ))}
                     </select>
-                    <input required name="city" onChange={onChangeHandler} value={data.city} type="text" placeholder='City' />
+                    <select required name="city" onChange={onChangeHandler} value={data.city}>
+                        <option value="" disabled>Select City</option>
+                        {cities.map((city, index) => (
+                            <option key={index} value={city._id}>{city.name}</option>
+                        ))}
+                    </select>
                 </div>
                 <div className="multi-fields">
                     <input required name="zipcode" onChange={onChangeHandler} value={data.zipcode} type="text" placeholder='Zipcode' />
