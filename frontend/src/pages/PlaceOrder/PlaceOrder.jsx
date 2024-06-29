@@ -86,14 +86,14 @@ const PlaceOrder = () => {
         try {
             const response = await axios.get(`${url}/api/city/by-country/${countryId}`);
             if (response.data.success) {
-                return response.data.data; // Assuming response.data.data is an array of cities
+                return response.data.data; 
             } else {
                 console.error('Error fetching cities by country');
-                return []; // Return empty array on error or no cities found
+                return []; 
             }
         } catch (error) {
             console.error('Error fetching cities by country:', error);
-            return []; // Return empty array on error or no cities found
+            return []; 
         }
     };
 
