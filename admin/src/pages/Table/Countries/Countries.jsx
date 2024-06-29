@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import './Countries.css';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
-import { BsTrash3, BsPencil } from 'react-icons/bs';
+import ConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
+import CountryList from '../../../components/Country/CountryList';
+import CountrySearch from '../../../components/Country/CountrySearch';
+import Pagination from '../../../components/Pagination/Pagination';
+import EditCountryModal from '../../../components/Country/EditCountryModal';
 
 const Countries = ({ url }) => {
     const [list, setList] = useState([]);
@@ -16,21 +18,40 @@ const Countries = ({ url }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
 
+    const editModalRef = useRef(null);
+    const deleteModalRef = useRef(null);
+
     useEffect(() => {
         fetchCountries();
     }, []);
 
     useEffect(() => {
-        if (isEditModalOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-    }, [isEditModalOpen]);
+        filterCountries();
+    }, [searchTerm]);
 
     useEffect(() => {
-        filterCountries();
-    }, [searchTerm, list]);
+        if (isEditModalOpen || isModalOpen) {
+            document.body.style.overflow = 'hidden';
+            window.addEventListener('keydown', handleEscKey);
+        } else {
+            document.body.style.overflow = 'auto';
+            window.removeEventListener('keydown', handleEscKey);
+        }
+        return () => {
+            window.removeEventListener('keydown', handleEscKey);
+        };
+    }, [isEditModalOpen, isModalOpen]);
+
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            if (isEditModalOpen) {
+                closeEditModal();
+            }
+            if (isModalOpen) {
+                closeModal();
+            }
+        }
+    };
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text).then(() => {
@@ -124,7 +145,6 @@ const Countries = ({ url }) => {
             }
         } catch (error) {
             toast.error("Error updating country for country ID: " + countryIdToDelete, {
-                onClick: () => copyToClipboard(countryIdToDelete),
                 style: {
                     cursor: "pointer"
                 }
@@ -161,65 +181,24 @@ const Countries = ({ url }) => {
                 <div className='country-title'>
                     <p>All Countries List</p>
                 </div>
-                <div className='country-search'>
-                    <input
-                        type='text'
-                        placeholder='Search countries...'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
+                <CountrySearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             </div>
-            <div className="country-table">
-                <div className="country-table-format title">
-                    <b>Name</b>
-                    <b>Actions</b>
-                </div>
-                {currentItems.length > 0 ? (
-                    currentItems.map((item, index) => (
-                        <div key={index} className='country-table-format'>
-                            <p>{item.name}</p>
-                            <div className='actions'>
-                                <p onClick={() => openEditModal(item)} className='cursor'><BsPencil /></p>
-                                <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>No country found</p>
-                )}
-            </div>
-            {/* Pagination Controls */}
-            <div className="pagination">
-                <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button key={index} className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`} onClick={() => paginate(index + 1)}>
-                        {index + 1}
-                    </button>
-                ))}
-                <button className="pagination-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-            </div>
+            <CountryList countries={currentItems} openEditModal={openEditModal} openModal={openModal} />
+            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
             <ConfirmModal
+                ref={deleteModalRef}
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 onConfirm={removeCountry}
             />
-            {isEditModalOpen && (
-                <div className="edit-modal">
-                    <div className="edit-modal-content">
-                        <h2>Edit Country</h2>
-                        <input
-                            type="text"
-                            value={countryToEdit.name}
-                            onChange={(e) => setCountryToEdit({ ...countryToEdit, name: e.target.value })}
-                        />
-                        <div className="edit-modal-buttons">
-                            <button onClick={closeEditModal} className="edit-modal-button" id='cancel-country'>Cancel</button>
-                            <button onClick={editCountry} className="edit-modal-button" id='save-country'>Save</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <EditCountryModal
+                ref={editModalRef}
+                isEditModalOpen={isEditModalOpen}
+                closeEditModal={closeEditModal}
+                countryToEdit={countryToEdit}
+                setCountryToEdit={setCountryToEdit}
+                editCountry={editCountry}
+            />
         </div>
     );
 };

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import './AddCategory.css'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { assets } from '../../assets/assets'
+import { assets } from '../../../assets/assets'
 
 const AddCategory = ({ url }) => {
     const [image, setImage] = useState(false)

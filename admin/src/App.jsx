@@ -2,18 +2,18 @@ import React from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import { Route, Routes } from 'react-router-dom';
-import Add from './pages/Add/Add';
-import List from './pages/List/List';
-import Orders from './pages/Orders/Orders';
+import AddFood from './pages/Add/AddFood/AddFood';
+import List from './pages/Table/Food/Food';
+import Orders from './pages/Table/Orders/Orders';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Countries from './pages/Countries/Countries';
-import AddCountry from './pages/AddCountry/AddCountry';
-import Categories from './pages/Categories/Categories';
-import AddCategory from './pages/AddCategory/AddCategory';
-import AddCity from './pages/AddCity/AddCity';
+import Countries from './pages/Table/Countries/Countries';
+import AddCountry from './pages/Add/AddCountry/AddCountry';
+import Categories from './pages/Table/Categories/Categories';
+import AddCategory from './pages/Add/AddCategory/AddCategory';
+import AddCity from './pages/Add/AddCity/AddCity';
 import StoreContextProvider from '../../frontend/src/context/StoreContext';
-import Cities from './pages/Cities/Cities';
+import Cities from './pages/Table/Cities/Cities';
 
 const App = () => {
   const url = "http://localhost:4000";
@@ -27,7 +27,7 @@ const App = () => {
         <div className='app-content'>
           <Sidebar />
           <Routes>
-            <Route path='/add' element={<Add url={url} />} />
+            <Route path='/add' element={<AddFood url={url} />} />
             <Route path='/list' element={<List url={url} />} />
             <Route path='/orders' element={<Orders url={url} />} />
             <Route path='/countries' element={<Countries url={url} />} />

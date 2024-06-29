@@ -74,6 +74,10 @@ button {
   gap: 18px;
 }
 
+.cursor {
+  cursor: pointer;
+}
+
 .edit-modal-content {
   display: flex;
   flex-direction: column;

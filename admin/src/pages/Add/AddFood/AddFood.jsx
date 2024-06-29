@@ -1,32 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Add.css';
-import { assets } from '../../assets/assets';
+import './AddFood.css';
+import { assets } from '../../../assets/assets';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const Add = ({ url }) => {
+const AddFood = ({ url }) => {
     const [image, setImage] = useState(false);
-    const [data, setData] = useState({
-        name: "",
-        description: "",
-        price: "",
-        category: "" 
-    });
-    const [categories, setCategories] = useState([]); 
+    const [data, setData] = useState({ name: "", description: "", price: "", category: "" });
+    const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
-    // Fetch categories from backend
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get(`${url}/api/category/list`);
                 if (response.data.success) {
-                    setCategories(response.data.data); 
+                    setCategories(response.data.data);
                     if (response.data.data.length > 0) {
                         setData(prev => ({
                             ...prev,
-                            category: response.data.data[0]._id 
+                            category: response.data.data[0]._id
                         }));
                     }
                 } else {
@@ -64,7 +58,7 @@ const Add = ({ url }) => {
                     name: "",
                     description: "",
                     price: "",
-                    category: categories.length > 0 ? categories[0]._id : "" 
+                    category: categories.length > 0 ? categories[0]._id : ""
                 });
                 setImage(false);
                 toast.success(response.data.message, {
@@ -127,4 +121,4 @@ const Add = ({ url }) => {
     );
 };
 
-export default Add;
+export default AddFood;

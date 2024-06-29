@@ -1,12 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
-import './List.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
-import { BsTrash3, BsPencil } from 'react-icons/bs';
+import DeleteConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
+import FoodList from '../../../components/Food/FoodList';
+import FoodPagination from '../../../components/Pagination/Pagination';
+import EditFoodModal from '../../../components/Food/EditFoodModal';
+import DownloadButtons from '../../../components/DownloadButtons/DownloadButtons';
+import CategoryFilter from '../../../components/Food/CategoryFilter';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import { StoreContext } from '../../../../frontend/src/context/StoreContext';
+import { StoreContext } from '../../../../../frontend/src/context/StoreContext';
 
 const List = ({ url }) => {
     const { categories, selectedCategory, setSelectedCategory } = useContext(StoreContext);
@@ -247,138 +250,30 @@ const List = ({ url }) => {
         }
     };
 
-    const handleCategoryClick = (categoryName) => {
-        setSelectedCategory(prev => prev === categoryName ? 'All' : categoryName);
-    };
-
     return (
         <div className='list add'>
             <div className='list-title'>
                 <p>All Foods List</p>
-                <div className="download-buttons">
-                    <button onClick={downloadPDF}>Export PDF</button>
-                    <button onClick={printList}>Print</button>
-                </div>
+                <DownloadButtons downloadPDF={downloadPDF} printList={printList} />
             </div>
-            <div className='category-filter'>
-                {categories.map((category, index) => (
-                    <div
-                        key={index}
-                        className={selectedCategory === category.name ? 'active' : ''}
-                        onClick={() => handleCategoryClick(category.name)}
-                    >
-                        <img
-                            className={selectedCategory === category.name ? "active" : ""}
-                            src={`${url}/images/` + category.image}
-                            alt={category.name}
-                        />
-                        <p>{category.name}</p>
-                    </div>
-                ))}
-                <div
-                    className={selectedCategory === 'All' ? 'active' : ''}
-                    onClick={() => setSelectedCategory('All')}
-                >
-                </div>
-            </div>
-            <div className="list-table">
-                <div className="list-table-format title">
-                    <b>Item</b>
-                    <b>Name</b>
-                    <b>Category</b>
-                    <b>Price</b>
-                    <b>Action</b>
-                </div>
-                {currentItems.map((item, index) => (
-                    <div key={index} className='list-table-format'>
-                        <img src={`${url}/images/` + item.image} alt={item.name} />
-                        <p>{item.name}</p>
-                        <p>{item.category ? item.category.name : ''}</p>
-                        <p>{item.price}</p>
-                        <div className='actions'>
-                            <p onClick={() => openEditModal(item)} className='cursor'><BsPencil /></p>
-                            <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-            {/* Pagination Controls */}
-            <div className="pagination">
-                <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button key={index} className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`} onClick={() => paginate(index + 1)}>
-                        {index + 1}
-                    </button>
-                ))}
-                <button className="pagination-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-            </div>
-            <ConfirmModal
+            <CategoryFilter categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} url={url} />
+            <FoodList foods={currentItems} openEditModal={openEditModal} openModal={openModal} url={url} />
+            <FoodPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            <DeleteConfirmModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 onConfirm={removeFood}
             />
-            {isEditModalOpen && (
-                <div className="edit-modal">
-                    <div className="edit-modal-content">
-                        <h2>Edit Food</h2>
-                        <input
-                            type="text"
-                            name="name"
-                            value={foodToEdit.name}
-                            onChange={onEditInputChange}
-                            placeholder="Food name"
-                        />
-                        <textarea
-                            name="description"
-                            value={foodToEdit.description}
-                            onChange={onEditInputChange}
-                            placeholder="Description"
-                        />
-                        <input
-                            type="number"
-                            name="price"
-                            value={foodToEdit.price}
-                            onChange={onEditInputChange}
-                            placeholder="Price"
-                        />
-                        <select
-                            name="category"
-                            value={foodToEdit.category}
-                            onChange={onEditInputChange}
-                        >
-                            {categories.map(category => (
-                                <option key={category._id} value={category._id}>{category.name}</option>
-                            ))}
-                        </select>
-                        <div className="edit-food-image">
-                            <p>Current Image</p>
-                            <img src={currentImage} alt="Current food" />
-                        </div>
-                        <div className="edit-food-image">
-                            <p>New Image</p>
-                            <label className="custom-file-upload">
-                                <input
-                                    type="file"
-                                    name="image"
-                                    onChange={onEditInputChange}
-                                    accept="image/*"
-                                />
-                                Choose File
-                            </label>
-                            {newImagePreview && (
-                                <>
-                                    <p>Preview</p>
-                                    <img src={newImagePreview} alt="New preview" />
-                                </>
-                            )}
-                        </div>
-                        <div className="edit-modal-buttons">
-                            <button onClick={closeEditModal} className="edit-modal-button" id='cancel-food'>Cancel</button>
-                            <button onClick={editFood} className="edit-modal-button" id='save-food'>Save</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <EditFoodModal
+                isEditModalOpen={isEditModalOpen}
+                closeEditModal={closeEditModal}
+                foodToEdit={foodToEdit}
+                onEditInputChange={onEditInputChange}
+                editFood={editFood}
+                currentImage={currentImage}
+                newImagePreview={newImagePreview}
+                categories={categories}
+            />
         </div>
     );
 };

@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import './Cities.css';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
-import { BsTrash3, BsPencil } from 'react-icons/bs';
+import ConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
+import CityList from '../../../components/City/CityList';
+import Pagination from '../../../components/Pagination/Pagination';
+import CitySearch from '../../../components/City/CitySearch';
+import EditCityModal from '../../../components/City/EditCityModal';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Cities = ({ url }) => {
     const [cities, setCities] = useState([]);
     const [filteredCities, setFilteredCities] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [countries, setCountries] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [cityIdToDelete, setCityIdToDelete] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [cityToEdit, setCityToEdit] = useState({ _id: '', name: '', country: '', zipcode: '' });
-    const [searchTerm, setSearchTerm] = useState('');
-
-    // Pagination state variables
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 13;
+
+    const editModalRef = useRef(null);
+    const deleteModalRef = useRef(null);
 
     useEffect(() => {
         fetchCities();
@@ -25,16 +29,32 @@ const Cities = ({ url }) => {
     }, []);
 
     useEffect(() => {
-        if (isEditModalOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-    }, [isEditModalOpen]);
-
-    useEffect(() => {
         filterCities();
     }, [searchTerm, cities]);
+
+    useEffect(() => {
+        if (isEditModalOpen || isModalOpen) {
+            document.body.style.overflow = 'hidden';
+            window.addEventListener('keydown', handleEscKey);
+        } else {
+            document.body.style.overflow = 'auto';
+            window.removeEventListener('keydown', handleEscKey);
+        }
+        return () => {
+            window.removeEventListener('keydown', handleEscKey);
+        };
+    }, [isEditModalOpen, isModalOpen]);
+
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            if (isEditModalOpen) {
+                closeEditModal();
+            }
+            if (isModalOpen) {
+                closeModal();
+            }
+        }
+    };
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text).then(() => {
@@ -76,7 +96,9 @@ const Cities = ({ url }) => {
 
     const filterCities = () => {
         const filtered = cities.filter(city =>
-            city.name.toLowerCase().includes(searchTerm.toLowerCase())
+            city.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            city.country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            city.zipcode.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredCities(filtered);
     };
@@ -162,86 +184,25 @@ const Cities = ({ url }) => {
                 <div className='city-title'>
                     <p>All Cities List</p>
                 </div>
-                <div className='city-search'>
-                    <input
-                        type='text'
-                        placeholder='Search cities...'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
+                <CitySearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             </div>
-            <div className="city-table">
-                <div className="city-table-format title">
-                    <b>Name</b>
-                    <b>Country</b>
-                    <b>Zipcode</b>
-                    <b>Actions</b>
-                </div>
-                {currentCities.length > 0 ? (
-                    currentCities.map((city, index) => (
-                        <div key={index} className='city-table-format'>
-                            <p>{city.name}</p>
-                            <p>{city.country.name}</p>
-                            <p>{city.zipcode}</p>
-                            <div className='actions'>
-                                <p onClick={() => openEditModal(city)} className='cursor'><BsPencil /></p>
-                                <p onClick={() => openModal(city._id)} className='cursor'><BsTrash3 /></p>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>No city found</p>
-                )}
-            </div>
-            <div className="pagination">
-                <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button key={index} className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`} onClick={() => paginate(index + 1)}>
-                        {index + 1}
-                    </button>
-                ))}
-                <button className="pagination-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-            </div>
+            <CityList cities={currentCities} openEditModal={openEditModal} openModal={openModal} />
+            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
             <ConfirmModal
+                ref={deleteModalRef}
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 onConfirm={removeCity}
             />
-            {isEditModalOpen && (
-                <div className="edit-modal">
-                    <div className="edit-modal-content">
-                        <h2>Edit City</h2>
-                        <input
-                            type="text"
-                            value={cityToEdit.name}
-                            onChange={handleEditInputChange}
-                            name="name"
-                            placeholder="City name"
-                        />
-                        <select
-                            value={cityToEdit.country._id}
-                            onChange={handleEditInputChange}
-                            name="country"
-                        >
-                            {countries.map((country) => (
-                                <option key={country._id} value={country._id}>{country.name}</option>
-                            ))}
-                        </select>
-                        <input
-                            type="text"
-                            value={cityToEdit.zipcode}
-                            onChange={handleEditInputChange}
-                            name="zipcode"
-                            placeholder="Zipcode"
-                        />
-                        <div className="edit-modal-buttons">
-                            <button onClick={closeEditModal} className="edit-modal-button" id='cancel-city'>Cancel</button>
-                            <button onClick={editCity} className="edit-modal-button" id='save-city'>Save</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <EditCityModal
+                ref={editModalRef}
+                isEditModalOpen={isEditModalOpen}
+                closeEditModal={closeEditModal}
+                cityToEdit={cityToEdit}
+                handleEditInputChange={handleEditInputChange}
+                editCity={editCity}
+                countries={countries}
+            />
             <ToastContainer />
         </div>
     );

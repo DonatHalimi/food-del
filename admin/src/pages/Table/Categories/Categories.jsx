@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import './Categories.css';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
-import { BsTrash3, BsPencil } from 'react-icons/bs';
+import ConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
+import CategoryList from '../../../components/Category/CategoryList';
+import Pagination from '../../../components/Pagination/Pagination';
+import EditCategoryModal from '../../../components/Category/EditCategoryModal';
+import DownloadButtons from '../../../components/DownloadButtons/DownloadButtons';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
@@ -18,17 +20,36 @@ const Categories = ({ url }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
 
+    const editModalRef = useRef(null);
+    const deleteModalRef = useRef(null);
+
     useEffect(() => {
         fetchCategories();
     }, []);
 
     useEffect(() => {
-        if (isEditModalOpen) {
+        if (isEditModalOpen || isModalOpen) {
             document.body.style.overflow = 'hidden';
+            window.addEventListener('keydown', handleEscKey);
         } else {
             document.body.style.overflow = 'auto';
+            window.removeEventListener('keydown', handleEscKey);
         }
-    }, [isEditModalOpen]);
+        return () => {
+            window.removeEventListener('keydown', handleEscKey);
+        };
+    }, [isEditModalOpen, isModalOpen]);
+
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            if (isEditModalOpen) {
+                closeEditModal();
+            }
+            if (isModalOpen) {
+                closeModal();
+            }
+        }
+    };
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text).then(() => {
@@ -134,7 +155,6 @@ const Categories = ({ url }) => {
             formData.append('image', categoryToEdit.image);
         }
 
-        console.log("category to edit " + categoryToEdit)
         try {
             const response = await axios.post(`${url}/api/category/edit`, formData, {
                 headers: {
@@ -240,92 +260,26 @@ const Categories = ({ url }) => {
         <div className='category add'>
             <div className='category-title'>
                 <p>All Categories List</p>
-                <div className="download-buttons">
-                    <button onClick={downloadPDF}>Export PDF</button>
-                    <button onClick={printList}>Print</button>
-                </div>
+                <DownloadButtons downloadPDF={downloadPDF} printList={printList} />
             </div>
-            <div className="category-table">
-                <div className="category-table-format title">
-                    <b>Item</b>
-                    <b>Name</b>
-                    <b>Description</b>
-                    <b>Action</b>
-                </div>
-                {currentItems.map((item, index) => (
-                    <div key={index} className='category-table-format'>
-                        <img src={`${url}/images/` + item.image} alt="" />
-                        <p>{item.name}</p>
-                        <p>{item.description}</p>
-                        <div className='actions'>
-                            <p onClick={() => openEditModal(item)} className='cursor'><BsPencil /></p>
-                            <p onClick={() => openModal(item._id)} className='cursor'><BsTrash3 /></p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-            {/* Pagination Controls */}
-            <div className="pagination">
-                <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button key={index} className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`} onClick={() => paginate(index + 1)}>
-                        {index + 1}
-                    </button>
-                ))}
-                <button className="pagination-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-            </div>
+            <CategoryList categories={currentItems} openEditModal={openEditModal} openModal={openModal} url={url} />
+            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
             <ConfirmModal
+                ref={deleteModalRef}
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 onConfirm={removeCategory}
             />
-            {isEditModalOpen && (
-                <div className="edit-modal">
-                    <div className="edit-modal-content">
-                        <h2>Edit Category</h2>
-                        <input
-                            type="text"
-                            name="name"
-                            value={categoryToEdit.name}
-                            onChange={onEditInputChange}
-                            placeholder="Category name"
-                        />
-                        <textarea
-                            name="description"
-                            value={categoryToEdit.description}
-                            onChange={onEditInputChange}
-                            placeholder="Description"
-                            id='category-edit-desc'
-                        />
-                        <div className="edit-food-image">
-                            <p>Current Image</p>
-                            <img src={currentImage} alt="Current category" />
-                        </div>
-                        <div className="edit-food-image">
-                            <p>New Image</p>
-                            <label className="custom-file-upload">
-                                <input
-                                    type="file"
-                                    name="image"
-                                    onChange={onEditInputChange}
-                                    accept="image/*"
-                                />
-                                Choose File
-                            </label>
-                            {newImagePreview && (
-                                <>
-                                    <p>Preview</p>
-                                    <img src={newImagePreview} alt="New preview" />
-                                </>
-                            )}
-                        </div>
-                        <div className="edit-modal-buttons">
-                            <button onClick={closeEditModal} className="edit-modal-button" id='cancel-category'>Cancel</button>
-                            <button onClick={editCategory} className="edit-modal-button" id='save-category'>Save</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <EditCategoryModal
+                ref={editModalRef}
+                isEditModalOpen={isEditModalOpen}
+                closeEditModal={closeEditModal}
+                categoryToEdit={categoryToEdit}
+                onEditInputChange={onEditInputChange}
+                editCategory={editCategory}
+                currentImage={currentImage}
+                newImagePreview={newImagePreview}
+            />
         </div>
     );
 };
