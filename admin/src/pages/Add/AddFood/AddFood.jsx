@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './AddFood.css';
 import { assets } from '../../../assets/assets';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 const AddFood = ({ url }) => {
     const [image, setImage] = useState(false);
@@ -117,6 +117,7 @@ const AddFood = ({ url }) => {
                 </div>
                 <button type='submit' className='add-btn'>ADD</button>
             </form>
+            <ToastContainer />
         </div>
     );
 };

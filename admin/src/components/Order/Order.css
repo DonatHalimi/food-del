@@ -87,6 +87,21 @@
     background-color: #e0e0e0;
 }
 
+.copy-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: tomato;
+    padding: 0;
+    margin-left: 5px;
+}
+
+.copy-button svg {
+    width: 20px;
+    height: 20px;
+    color: tomato;
+}
+
 @media (max-width:1000px) {
     .order-item {
         font-size: 12px;

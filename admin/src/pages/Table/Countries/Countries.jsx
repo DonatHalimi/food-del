@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import ConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
 import CountryList from '../../../components/Country/CountryList';
 import CountrySearch from '../../../components/Country/CountrySearch';
@@ -199,6 +199,7 @@ const Countries = ({ url }) => {
                 setCountryToEdit={setCountryToEdit}
                 editCountry={editCountry}
             />
+            <ToastContainer />
         </div>
     );
 };

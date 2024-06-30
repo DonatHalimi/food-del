@@ -71,6 +71,12 @@
     padding: 1px;
 }
 
+.edit-modal-content img{
+    max-width: 70%;
+    height: auto;
+    border-radius: 5px;
+}
+
 .list-table {
     width: 100%;
     overflow-x: auto;

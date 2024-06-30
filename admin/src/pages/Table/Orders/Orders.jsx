@@ -26,6 +26,15 @@ const Orders = ({ url }) => {
         }
     };
 
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.info("Order ID copied to clipboard");
+        }, (err) => {
+            toast.error("Failed to copy order ID");
+            console.error("Failed to copy text: ", err);
+        });
+    };
+
     const statusHandler = async (event, orderId) => {
         const status = event.target.value;
         try {

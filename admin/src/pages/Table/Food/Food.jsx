@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import DeleteConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
 import FoodList from '../../../components/Food/FoodList';
 import FoodPagination from '../../../components/Pagination/Pagination';
@@ -28,7 +28,7 @@ const List = ({ url }) => {
     }, [selectedCategory]);
 
     useEffect(() => {
-        if (isEditModalOpen) {
+        if (isEditModalOpen || isModalOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
@@ -274,6 +274,7 @@ const List = ({ url }) => {
                 newImagePreview={newImagePreview}
                 categories={categories}
             />
+            <ToastContainer />
         </div>
     );
 };

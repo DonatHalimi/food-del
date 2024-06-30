@@ -1,11 +1,16 @@
 import React from 'react';
 import { assets } from '../../assets/assets';
+import { FaClipboard } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Order.css';
 
 const OrderList = ({ orders, url, statusHandler }) => {
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text).then(() => {
-            toast.info("Order ID copied to clipboard");
+            toast.info("Order ID copied to clipboard", {
+                closeOnClick: true
+            });
         }, (err) => {
             toast.error("Failed to copy order ID");
             console.error("Failed to copy text: ", err);
@@ -42,11 +47,17 @@ const OrderList = ({ orders, url, statusHandler }) => {
                             <option value="Out for Delivery">Out for Delivery</option>
                             <option value="Delivered">Delivered</option>
                         </select>
+                        <div className="order-id-copy">
+                            <button onClick={() => copyToClipboard(order._id)} className="copy-button">
+                                <FaClipboard />
+                            </button>
+                        </div>
                     </div>
                 ))
             ) : (
                 <p>No orders found</p>
             )}
+            <ToastContainer />
         </div>
     );
 };

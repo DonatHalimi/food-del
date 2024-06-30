@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './AddCountry.css'
 import axios from 'axios'
-import { toast } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 
 const AddCountry = ({ url }) => {
     const [data, setData] = useState({ name: '' })
@@ -42,6 +42,7 @@ const AddCountry = ({ url }) => {
                 </div>
                 <button type='submit' className='add-btn'>ADD</button>
             </form>
+            <ToastContainer />
         </div>
     )
 }

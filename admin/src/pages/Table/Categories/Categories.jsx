@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import ConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
 import CategoryList from '../../../components/Category/CategoryList';
 import Pagination from '../../../components/Pagination/Pagination';
@@ -280,6 +280,7 @@ const Categories = ({ url }) => {
                 currentImage={currentImage}
                 newImagePreview={newImagePreview}
             />
+            <ToastContainer />
         </div>
     );
 };

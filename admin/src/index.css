@@ -104,7 +104,9 @@ button {
 }
 
 .edit-food-image img {
-  max-width: 100%;
+  max-width: 70%;
+  position: relative;
+  left: 50px;
   height: auto;
   border-radius: 5px;
 }

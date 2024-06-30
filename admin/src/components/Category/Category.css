@@ -36,6 +36,19 @@
     font-size: 13px;
 }
 
+.edit-category-image {
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-category-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
 .category-table-format.title {
     background-color: #f9f9f9;
 }

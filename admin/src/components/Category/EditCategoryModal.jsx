@@ -21,11 +21,11 @@ const EditCategoryModal = ({ isEditModalOpen, closeEditModal, categoryToEdit, on
                         placeholder="Description"
                         id='category-edit-desc'
                     />
-                    <div className="edit-food-image">
+                    <div className="edit-category-image">
                         <p>Current Image</p>
                         <img src={currentImage} alt="Current category" />
                     </div>
-                    <div className="edit-food-image">
+                    <div className="edit-category-image">
                         <p>New Image</p>
                         <label className="custom-file-upload">
                             <input

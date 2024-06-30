@@ -6,11 +6,12 @@ import Cart from './pages/Cart/Cart'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 import Footer from './components/Footer/Footer'
 import LoginPopup from './components/LoginPopup/LoginPopup'
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
 import TermsOfUse from './components/TermsOfUse/TermsOfUse'
+import FoodDetails from './components/FoodDetails/FoodDetails'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
@@ -23,11 +24,12 @@ const App = () => {
         <Navbar setShowLogin={setShowLogin} />
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path="/food/:id" element={<FoodDetails />} />
           <Route path='/cart' element={<Cart />} />
           <Route path='/order' element={<PlaceOrder />} />
           <Route path='/verify' element={<Verify />} />
           <Route path='/my-orders' element={<MyOrders />} />
-          <Route path='/terms-of-use' element={<TermsOfUse />}  />
+          <Route path='/terms-of-use' element={<TermsOfUse />} />
         </Routes>
       </div>
       <Footer />
