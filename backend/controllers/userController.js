@@ -63,8 +63,76 @@ const loginUser = async (req, res) => {
         res.json({ success: true, token })
     } catch (error) {
         console.log(error)
-        res.json({success: false, message: "Error logging user in"})
+        res.json({ success: false, message: "Error logging user in" })
     }
 }
 
-export { registerUser, loginUser }
+// create a new user
+const createUser = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        const existingUser = await userModel.findOne({ name, email, password });
+        if (existingUser) {
+            return res.json({ success: false, message: 'User already exists' });
+        }
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
+        const newUser = new userModel({
+            name: name,
+            email: email,
+            password: hashedPassword
+        });
+        
+        await newUser.save();
+
+        res.json({ success: true, message: 'User created successfully', user: newUser });
+    } catch (error) {
+        console.error('Create User Error:', error);
+        res.json({ success: false, message: 'Failed to create user' });
+    }
+};
+
+// get all users
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await userModel.find();
+        res.json({ success: true, users });
+    } catch (error) {
+        console.error('Get All Users Error:', error);
+        res.json({ success: false, message: 'Failed to fetch users' });
+    }
+};
+
+// remove user
+const removeUser = async (req, res) => {
+    try {
+        const { id } = req.body;
+        await userModel.findByIdAndDelete(id);
+        res.json({ success: true, message: 'User removed successfully' });
+    } catch (error) {
+        console.error('Remove User Error:', error);
+        res.json({ success: false, message: 'Error removing User' });
+    }
+};
+
+// edit user
+const editUser = async (req, res) => {
+    try {
+        const { _id, name, email, password } = req.body;
+
+        const updatedUser = await userModel.findByIdAndUpdate(_id, { name, email, password }, { new: true });
+
+        if (!updatedUser) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+
+        res.json({ success: true, message: 'User updated successfully', country: updatedUser });
+    } catch (error) {
+        console.error('Edit User Error:', error);
+        res.json({ success: false, message: 'Error updating user' });
+    }
+};
+
+export { registerUser, loginUser, createUser, getAllUsers, removeUser, editUser }

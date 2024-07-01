@@ -37,10 +37,10 @@
 }
 
 .edit-category-image {
-  display: flex;
-  justify-content: start;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .edit-category-image img {

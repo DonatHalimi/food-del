@@ -14,6 +14,8 @@ import AddCategory from './pages/Add/AddCategory/AddCategory';
 import AddCity from './pages/Add/AddCity/AddCity';
 import StoreContextProvider from '../../frontend/src/context/StoreContext';
 import Cities from './pages/Table/Cities/Cities';
+import AddUser from './pages/Add/AddUser/AddUser';
+import Users from './pages/Table/Users/Users';
 
 const App = () => {
   const url = "http://localhost:4000";
@@ -36,6 +38,8 @@ const App = () => {
             <Route path='/add-category' element={<AddCategory url={url} />} />
             <Route path='/add-city' element={<AddCity url={url} />} />
             <Route path='/cities' element={<Cities url={url} />} />
+            <Route path='/add-user' element={<AddUser url={url} />} />
+            <Route path='/users' element={<Users url={url} />} />
           </Routes>
         </div>
       </div>

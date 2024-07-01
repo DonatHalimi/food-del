@@ -222,3 +222,52 @@ input[type="file"] {
 .download-buttons button:hover {
   background-color: black;
 }
+
+.add-img-upload.dragging {
+  border: 2px dashed #000;
+  background-color: #f0f0f0;
+  width: 40%;
+}
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.image-modal-content {
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+.close-icon {
+  position: absolute;
+  top: -70px;
+  right: -530px;
+  cursor: pointer;
+  color: white;
+  font-size: 2em;
+}
+
+.close-icon-food{
+  position: absolute;
+  top: -160px;
+  right: -530px;
+  cursor: pointer;
+  color: white;
+  font-size: 2em;
+}

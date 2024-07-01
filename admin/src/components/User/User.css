@@ -1,0 +1,119 @@
+.user {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.user-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.user-title p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 50px;
+    color: #262626;
+}
+
+.user-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.user-table-format {
+    display: grid;
+    grid-template-columns: 0.5fr 0.4fr 1.5fr 0.4fr;
+    align-items: center;
+    gap: 120px;
+    padding: 12px 15px;
+    border: 1px solid #cacaca;
+    font-size: 13px;
+}
+
+.user-table-format.title {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+.user-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.user-title p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.user-search {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-search input {
+    padding: 10px;
+    border: 1px solid #a9a9a9;
+    border-radius: 4px;
+}
+
+.confirm-modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.confirm-modal-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.confirm-modal-button:hover {
+    background-color: #e0e0e0;
+}
+
+.edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.edit-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.edit-modal-content h2 {
+    margin: 0 0 10px 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.edit-modal-content input {
+    padding: 10px;
+    border: 1px solid #cacaca;
+    border-radius: 5px;
+    width: 100%;
+}

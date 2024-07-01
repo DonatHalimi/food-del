@@ -16,7 +16,7 @@ const createCountry = async (req, res) => {
         res.json({ success: true, message: 'Country created successfully', country: newCountry });
     } catch (error) {
         console.error('Create Country Error:', error);
-        res.status(500).json({ success: false, message: 'Failed to create country' });
+        res.json({ success: false, message: 'Failed to create country' });
     }
 };
 
@@ -27,7 +27,7 @@ const getAllCountries = async (req, res) => {
         res.json({ success: true, countries });
     } catch (error) {
         console.error('Get All Countries Error:', error);
-        res.status(500).json({ success: false, message: 'Failed to fetch countries' });
+        res.json({ success: false, message: 'Failed to fetch countries' });
     }
 };
 
@@ -39,7 +39,7 @@ const removeCountry = async (req, res) => {
         res.json({ success: true, message: 'Country removed successfully' });
     } catch (error) {
         console.error('Remove Country Error:', error);
-        res.status(500).json({ success: false, message: 'Error removing country' });
+        res.json({ success: false, message: 'Error removing country' });
     }
 };
 
@@ -57,7 +57,7 @@ const editCountry = async (req, res) => {
         res.json({ success: true, message: 'Country updated successfully', country: updatedCountry });
     } catch (error) {
         console.error('Edit Country Error:', error);
-        res.status(500).json({ success: false, message: 'Error updating country' });
+        res.json({ success: false, message: 'Error updating country' });
     }
 };
 

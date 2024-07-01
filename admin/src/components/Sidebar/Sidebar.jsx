@@ -7,6 +7,7 @@ const Sidebar = () => {
     const [expanded, setExpanded] = useState({
         food: false,
         category: false,
+        user: false,
         country: false,
         city: false,
     });
@@ -21,6 +22,7 @@ const Sidebar = () => {
     return (
         <div className='sidebar'>
             <div className="sidebar-options">
+
                 <div className="sidebar-option" onClick={() => toggleExpand('food')}>
                     <img src={assets.order_icon} alt="" />
                     <p>Food</p>
@@ -28,7 +30,7 @@ const Sidebar = () => {
                 <div className={`sidebar-sub-options ${expanded.food ? 'expanded' : ''}`}>
                     <NavLink to='/add' className="sidebar-option">
                         <img src={assets.add_icon} alt="" />
-                        <p>Add Items</p>
+                        <p>Add Item</p>
                     </NavLink>
                     <NavLink to='/list' className="sidebar-option">
                         <img src={assets.order_icon} alt="" />
@@ -52,6 +54,21 @@ const Sidebar = () => {
                     <NavLink to='/categories' className="sidebar-option">
                         <img src={assets.order_icon} alt="" />
                         <p>Categories</p>
+                    </NavLink>
+                </div>
+
+                <div className="sidebar-option" onClick={() => toggleExpand('user')}>
+                    <img src={assets.order_icon} alt="" />
+                    <p>User</p>
+                </div>
+                <div className={`sidebar-sub-options ${expanded.user ? 'expanded' : ''}`}>
+                    <NavLink to='/add-user' className="sidebar-option">
+                        <img src={assets.add_icon} alt="" />
+                        <p>Add User</p>
+                    </NavLink>
+                    <NavLink to='/users' className="sidebar-option">
+                        <img src={assets.order_icon} alt="" />
+                        <p>Users</p>
                     </NavLink>
                 </div>
 

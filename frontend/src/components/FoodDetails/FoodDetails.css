@@ -44,12 +44,16 @@
     flex-direction: column;
     justify-content: center;
     max-width: 500px;
-    flex-grow: 1;
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.food-details-content h2 {
+    margin-bottom: 200px;
 }
 
 .food-details h2 {
-    font-size: 60px;
+    font-size: 50px;
     font-weight: 700;
     color: #333;
     margin-bottom: 10px;

@@ -6,7 +6,8 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 
 const AddFood = ({ url }) => {
-    const [image, setImage] = useState(false);
+    const [image, setImage] = useState(null);
+    const [isDragging, setIsDragging] = useState(false);
     const [data, setData] = useState({ name: "", description: "", price: "", category: "" });
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
@@ -41,6 +42,23 @@ const AddFood = ({ url }) => {
         setData(prev => ({ ...prev, [name]: value }));
     };
 
+    const onDropHandler = (event) => {
+        event.preventDefault();
+        setIsDragging(false);
+        if (event.dataTransfer.files && event.dataTransfer.files[0]) {
+            setImage(event.dataTransfer.files[0]);
+        }
+    };
+
+    const onDragOverHandler = (event) => {
+        event.preventDefault();
+        setIsDragging(true);
+    };
+
+    const onDragLeaveHandler = () => {
+        setIsDragging(false);
+    };
+
     const onSubmitHandler = async (event) => {
         event.preventDefault();
 
@@ -60,7 +78,7 @@ const AddFood = ({ url }) => {
                     price: "",
                     category: categories.length > 0 ? categories[0]._id : ""
                 });
-                setImage(false);
+                setImage(null);
                 toast.success(response.data.message, {
                     style: { cursor: 'pointer' },
                     onClick: () => navigate('/list')
@@ -86,12 +104,23 @@ const AddFood = ({ url }) => {
     return (
         <div className='add'>
             <form className='flex-col' onSubmit={onSubmitHandler}>
-                <div className="add-img-upload flex-col">
+                <div
+                    className={`add-img-upload flex-col ${isDragging ? 'dragging' : ''}`}
+                    onDrop={onDropHandler}
+                    onDragOver={onDragOverHandler}
+                    onDragLeave={onDragLeaveHandler}
+                >
                     <p>Upload Image</p>
                     <label htmlFor="image">
                         <img src={image ? URL.createObjectURL(image) : assets.upload_area} alt="" />
                     </label>
-                    <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image' hidden required />
+                    <input
+                        onChange={(e) => setImage(e.target.files[0])}
+                        type="file"
+                        id='image'
+                        hidden
+                        required={!image}
+                    />
                 </div>
                 <div className="add-product-name flex-col">
                     <p>Product name</p>

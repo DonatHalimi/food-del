@@ -1,0 +1,39 @@
+.add {
+    width: 70%;
+    margin-left: max(5vw, 25px);
+    margin-top: 50px;
+    color: #6d6d6d;
+    font-size: 16px;
+}
+
+.add form {
+    gap: 20px;
+}
+
+.add-user-name {
+    width: max(20%, 280px);
+}
+
+.add-user-name input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    margin-top: 12px;
+}
+
+.add-btn {
+    max-width: 120px;
+    border: none;
+    padding: 10px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-product-name input:focus {
+    outline: none;
+    border-color: #333;
+}
