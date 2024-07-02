@@ -4,7 +4,8 @@ import { assets } from '../../assets/assets';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const LoginPopup = ({ setShowLogIn }) => {
     const [currentState, setCurrentState] = useState("Login");
@@ -13,11 +14,11 @@ const LoginPopup = ({ setShowLogIn }) => {
         email: "",
         password: ""
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const { url, setToken } = useContext(StoreContext);
     const navigate = useNavigate();
 
-    // Disable scroll when popup is displayed
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
@@ -78,7 +79,22 @@ const LoginPopup = ({ setShowLogIn }) => {
                     {currentState === 'Login' ? <></>
                         : <input name='name' onChange={onChangeHandler} value={data.name} type="text" placeholder='Your name' required />}
                     <input name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder='Your email' required />
-                    <input name='password' onChange={onChangeHandler} value={data.password} type="password" placeholder='Password' required />
+                    <div className="password-input-container">
+                        <input
+                            name='password'
+                            onChange={onChangeHandler}
+                            value={data.password}
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder='Password'
+                            required
+                        />
+                        <span
+                            className="password-toggle-icon"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
                 </div>
                 <div className="login-popup-condition">
                     <input type="checkbox" required />

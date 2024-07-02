@@ -84,7 +84,6 @@ const createUser = async (req, res) => {
             email: email,
             password: hashedPassword
         });
-        
         await newUser.save();
 
         res.json({ success: true, message: 'User created successfully', user: newUser });
@@ -122,13 +121,20 @@ const editUser = async (req, res) => {
     try {
         const { _id, name, email, password } = req.body;
 
-        const updatedUser = await userModel.findByIdAndUpdate(_id, { name, email, password }, { new: true });
+        let updatedFields = { name, email };
+        if (password) {
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(password, salt)
+            updatedFields.password = hashedPassword
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(_id, updatedFields, { new: true });
 
         if (!updatedUser) {
             return res.json({ success: false, message: 'User not found' });
         }
 
-        res.json({ success: true, message: 'User updated successfully', country: updatedUser });
+        res.json({ success: true, message: 'User updated successfully', user: updatedUser });
     } catch (error) {
         console.error('Edit User Error:', error);
         res.json({ success: false, message: 'Error updating user' });

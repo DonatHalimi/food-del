@@ -3,10 +3,12 @@ import './MyOrders.css';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import { assets } from '../../assets/assets';
+import { useNavigate } from 'react-router-dom';
 
 const MyOrders = () => {
     const [data, setData] = useState([]);
     const { url, token } = useContext(StoreContext);
+    const navigate = useNavigate();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
@@ -53,26 +55,29 @@ const MyOrders = () => {
 
     return (
         <div className='my-orders'>
+            <div className="back-arrow" onClick={() => navigate(-1)}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 19L8 12L15 5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            </div>
             <h2>My Orders</h2>
             <div className="container">
-                {currentItems.map((order, index) => {
-                    return (
-                        <div key={index} className='my-orders-order'>
-                            <img src={assets.parcel_icon} alt="" />
-                            <p>{order.items.map((item, index) => {
-                                if (index === order.items.length - 1) {
-                                    return item.name + " x " + item.quantity;
-                                } else {
-                                    return item.name + " x " + item.quantity + ", ";
-                                }
-                            })}</p>
-                            <p>${order.amount}.00</p>
-                            <p>Items: {order.items.length}</p>
-                            <p><span>&#x25cf;</span> <b>{order.status}</b></p>
-                            <button onClick={() => console.log('Track order clicked for:', order)}>Track Order</button>
-                        </div>
-                    );
-                })}
+                {currentItems.map((order, index) => (
+                    <div key={index} className='my-orders-order'>
+                        <img src={assets.parcel_icon} alt="" />
+                        <p>{order.items.map((item, index) => {
+                            if (index === order.items.length - 1) {
+                                return item.name + " x " + item.quantity;
+                            } else {
+                                return item.name + " x " + item.quantity + ", ";
+                            }
+                        })}</p>
+                        <p>${order.amount}.00</p>
+                        <p>Items: {order.items.length}</p>
+                        <p><span>&#x25cf;</span> <b>{order.status}</b></p>
+                        <button onClick={() => console.log('Track order clicked for:', order)}>Track Order</button>
+                    </div>
+                ))}
             </div>
             {/* Pagination Controls */}
             <div className="pagination-orders">

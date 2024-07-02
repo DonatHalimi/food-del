@@ -9,6 +9,10 @@
     margin-top: 30px;
 }
 
+.my-orders h2 {
+    margin-top: 10px;
+}
+
 .my-orders-order {
     display: grid;
     grid-template-columns: 0.5fr 2fr 1fr 1fr 2fr 1fr;
@@ -76,6 +80,31 @@
 
 .pagination-orders-button:disabled:hover {
     background-color: #e0e0e0;
+}
+
+.back-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.back-arrow:hover {
+    background-color: #ffffff;
+}
+
+.my-orders {
+    position: relative;
+    padding-top: 60px;
 }
 
 @media(max-width:900px) {

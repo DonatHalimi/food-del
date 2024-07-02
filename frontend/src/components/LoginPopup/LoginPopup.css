@@ -82,3 +82,20 @@
 .login-popup-condition p a:hover {
     text-decoration: underline;
 }
+
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-container input {
+    flex: 1;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 8px;
+    cursor: pointer;
+}
