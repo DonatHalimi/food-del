@@ -16,6 +16,7 @@ import StoreContextProvider from '../../frontend/src/context/StoreContext';
 import Cities from './pages/Table/Cities/Cities';
 import AddUser from './pages/Add/AddUser/AddUser';
 import Users from './pages/Table/Users/Users';
+import ToTop from './components/ToTop/ToTop';
 
 const App = () => {
   const url = "http://localhost:4000";
@@ -41,6 +42,7 @@ const App = () => {
             <Route path='/add-user' element={<AddUser url={url} />} />
             <Route path='/users' element={<Users url={url} />} />
           </Routes>
+          <ToTop />
         </div>
       </div>
     </StoreContextProvider>

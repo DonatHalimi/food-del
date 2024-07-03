@@ -140,12 +140,12 @@ const Users = ({ url }) => {
                     closeOnClick: true
                 });
             } else {
-                toast.error("Error while updating user", {
+                toast.error(response.data.message, {
                     closeOnClick: true
                 });
             }
         } catch (error) {
-            toast.error("Error updating user for user ID: " + userIdToDelete, {
+            toast.error(error.response.data.message, {
                 style: {
                     cursor: "pointer"
                 }

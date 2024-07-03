@@ -12,6 +12,8 @@ import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
 import TermsOfUse from './components/TermsOfUse/TermsOfUse'
 import FoodDetails from './components/FoodDetails/FoodDetails'
+import ToTop from './components/ToTop/ToTop'
+import SearchResults from './pages/SearchResults/SearchResults'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
@@ -30,8 +32,10 @@ const App = () => {
           <Route path='/verify' element={<Verify />} />
           <Route path='/my-orders' element={<MyOrders />} />
           <Route path='/terms-of-use' element={<TermsOfUse />} />
+          <Route path="/search" element={<SearchResults />} />
         </Routes>
       </div>
+      <ToTop />
       <Footer />
     </>
   )

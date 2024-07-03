@@ -123,9 +123,9 @@ const editUser = async (req, res) => {
 
         let updatedFields = { name, email };
         if (password) {
-            const salt = await bcrypt.genSalt(10)
-            const hashedPassword = await bcrypt.hash(password, salt)
-            updatedFields.password = hashedPassword
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            updatedFields.password = hashedPassword;
         }
 
         const updatedUser = await userModel.findByIdAndUpdate(_id, updatedFields, { new: true });
@@ -137,7 +137,7 @@ const editUser = async (req, res) => {
         res.json({ success: true, message: 'User updated successfully', user: updatedUser });
     } catch (error) {
         console.error('Edit User Error:', error);
-        res.json({ success: false, message: 'Error updating user' });
+        res.json({ success: false, message: error.message });
     }
 };
 
