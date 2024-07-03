@@ -4,6 +4,7 @@ import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import { assets } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
+import Pagination from '../../../../admin/src/components/Pagination/Pagination'
 
 const MyOrders = () => {
     const [data, setData] = useState([]);
@@ -57,7 +58,7 @@ const MyOrders = () => {
         <div className='my-orders'>
             <div className="back-arrow" onClick={() => navigate(-1)}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15 19L8 12L15 5" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M15 19L8 12L15 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
             </div>
             <h2>My Orders</h2>
@@ -79,16 +80,9 @@ const MyOrders = () => {
                     </div>
                 ))}
             </div>
-            {/* Pagination Controls */}
-            <div className="pagination-orders">
-                <button className="pagination-orders-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button key={index} className={`pagination-orders-button ${currentPage === index + 1 ? 'active' : ''}`} onClick={() => paginate(index + 1)}>
-                        {index + 1}
-                    </button>
-                ))}
-                <button className="pagination-orders-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-            </div>
+            {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            )}
         </div>
     );
 }

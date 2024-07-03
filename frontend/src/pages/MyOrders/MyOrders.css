@@ -10,7 +10,7 @@
 }
 
 .my-orders h2 {
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .my-orders-order {
@@ -46,42 +46,6 @@
     color: #454545;
 }
 
-
-.pagination-orders {
-    display: flex;
-    justify-content: start;
-    margin-top: 40px;
-}
-
-.pagination-orders-button {
-    margin: 0 2px;
-    padding: 8px 12px;
-    border: 1px solid #cacaca;
-    background-color: #f9f9f9;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.pagination-orders-button:hover {
-    background-color: #e0e0e0;
-}
-
-.pagination-orders-button.active {
-    background-color: tomato;
-    color: white;
-}
-
-.pagination-orders-button:disabled {
-    background-color: #e0e0e0;
-    color: #a0a0a0;
-    cursor: not-allowed;
-    border: 1px solid #d0d0d0;
-}
-
-.pagination-orders-button:disabled:hover {
-    background-color: #e0e0e0;
-}
-
 .back-arrow {
     display: flex;
     align-items: center;
@@ -89,7 +53,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #f0f0f0;
+    background-color: #fe775f;
     cursor: pointer;
     position: absolute;
     top: 20px;
@@ -99,7 +63,7 @@
 }
 
 .back-arrow:hover {
-    background-color: #ffffff;
+    background-color: tomato;
 }
 
 .my-orders {

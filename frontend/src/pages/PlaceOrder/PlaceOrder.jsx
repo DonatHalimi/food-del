@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import './PlaceOrder.css';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
@@ -20,6 +20,8 @@ const PlaceOrder = () => {
         country: "",
         phone: "",
     });
+
+    const phoneInputRef = useRef(null);
 
     useEffect(() => {
         fetchCountries();
@@ -76,6 +78,10 @@ const PlaceOrder = () => {
                     [name]: value,
                     zipcode: selectedCity.zipcode,
                 }));
+                // Focus on phone input when city is selected
+                if (phoneInputRef.current) {
+                    phoneInputRef.current.focus();
+                }
             }
         } else {
             setData(prevData => ({ ...prevData, [name]: value }));
@@ -86,14 +92,14 @@ const PlaceOrder = () => {
         try {
             const response = await axios.get(`${url}/api/city/by-country/${countryId}`);
             if (response.data.success) {
-                return response.data.data; 
+                return response.data.data;
             } else {
                 console.error('Error fetching cities by country');
-                return []; 
+                return [];
             }
         } catch (error) {
             console.error('Error fetching cities by country:', error);
-            return []; 
+            return [];
         }
     };
 
@@ -158,7 +164,7 @@ const PlaceOrder = () => {
                 </div>
                 <div className="multi-fields">
                     <input required name="zipcode" onChange={onChangeHandler} value={data.zipcode} type="text" placeholder='Zipcode' />
-                    <input required name="phone" onChange={onChangeHandler} value={data.phone} type="text" placeholder='Phone' />
+                    <input required name="phone" onChange={onChangeHandler} value={data.phone} ref={phoneInputRef} type="text" placeholder='Phone' />
                 </div>
             </div>
             <div className="place-order-right">

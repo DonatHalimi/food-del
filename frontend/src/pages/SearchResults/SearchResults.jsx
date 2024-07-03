@@ -3,14 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
 import FoodItem from '../../components/FoodItem/FoodItem';
 import './SearchResults.css';
-import { ToastContainer } from 'react-toastify';
+import Pagination from '../../../../admin/src/components/Pagination/Pagination'
 
 const SearchResults = () => {
     const { food_list } = useContext(StoreContext);
     const location = useLocation();
     const query = new URLSearchParams(location.search).get('query') || '';
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(20); 
+    const [itemsPerPage] = useState(15);
     const filteredProducts = food_list.filter(product =>
         product.name.toLowerCase().includes(query.toLowerCase())
     );
@@ -57,23 +57,9 @@ const SearchResults = () => {
                 {filteredProducts.length === 0 && (
                     <p>No products found for "{query}"</p>
                 )}
-            </div>
-            {totalPages > 1 && (
-                <div className="pagination">
-                    <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index}
-                            className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
-                            onClick={() => paginate(index + 1)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
-                    <button className="pagination-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-                </div>
+            </div>        {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
             )}
-            <ToastContainer />
         </div>
     );
 };

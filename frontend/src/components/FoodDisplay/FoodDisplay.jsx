@@ -2,24 +2,54 @@ import React, { useContext, useState, useEffect } from 'react';
 import './FoodDisplay.css';
 import { StoreContext } from '../../context/StoreContext';
 import FoodItem from '../FoodItem/FoodItem';
+import Pagination from '../../../../admin/src/components/Pagination/Pagination'
 
 const FoodDisplay = () => {
     const { food_list, selectedCategory } = useContext(StoreContext);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(15);
+    const [sortBy, setSortBy] = useState('popularity');
+    const [order, setOrder] = useState('asc');
 
-    const filteredList = selectedCategory === 'All'
-        ? food_list
-        : food_list.filter(item => item.category.name === selectedCategory);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedCategory, sortBy, order]);
 
+    const sortAndFilterFoodList = () => {
+        let filteredList = selectedCategory === 'All'
+            ? food_list
+            : food_list.filter(item => item.category.name === selectedCategory);
+
+        filteredList = filteredList.sort((a, b) => {
+            if (sortBy === 'popularity') {
+                return b.popularity - a.popularity;
+            } else {
+                if (a[sortBy] < b[sortBy]) return order === 'asc' ? -1 : 1;
+                if (a[sortBy] > b[sortBy]) return order === 'asc' ? 1 : -1;
+                return 0;
+            }
+        });
+
+        return filteredList;
+    };
+
+    const handleSortChange = (e) => {
+        const value = e.target.value;
+        if (value === 'popularity') {
+            setSortBy('popularity');
+            setOrder('asc');
+        } else {
+            const [sortField, sortOrder] = value.split(',');
+            setSortBy(sortField);
+            setOrder(sortOrder);
+        }
+    };
+
+    const filteredList = sortAndFilterFoodList();
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredList.length / itemsPerPage);
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [selectedCategory]);
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -39,7 +69,18 @@ const FoodDisplay = () => {
 
     return (
         <div className='food-display' id='food-display'>
-            <h2>Top dishes near you</h2>
+            <div className="food-display-header">
+                <h2>Top dishes near you</h2>
+                <div className="sort-options">
+                    <select onChange={handleSortChange} value={sortBy === 'popularity' ? 'popularity' : `${sortBy},${order}`}>
+                        <option value="popularity" disabled selected>Sort By</option>
+                        <option value="name,asc">Name (A-Z)</option>
+                        <option value="name,desc">Name (Z-A)</option>
+                        <option value="price,asc">Price (Low to High)</option>
+                        <option value="price,desc">Price (High to Low)</option>
+                    </select>
+                </div>
+            </div>
             <div className="food-display-list">
                 {currentItems.map((item, index) => (
                     <FoodItem
@@ -53,19 +94,7 @@ const FoodDisplay = () => {
                 ))}
             </div>
             {totalPages > 1 && (
-                <div className="pagination">
-                    <button className="pagination-button" onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index}
-                            className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
-                            onClick={() => paginate(index + 1)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
-                    <button className="pagination-button" onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
-                </div>
+                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
             )}
         </div>
     );
