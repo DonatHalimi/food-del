@@ -187,7 +187,9 @@ const Cities = ({ url }) => {
                 <CitySearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             </div>
             <CityList cities={currentCities} openEditModal={openEditModal} openModal={openModal} />
-            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            )}
             <ConfirmModal
                 ref={deleteModalRef}
                 isOpen={isModalOpen}

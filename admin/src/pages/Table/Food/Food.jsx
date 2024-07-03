@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import DeleteConfirmModal from '../../../components/DeleteConfirmModal/DeleteConfirmModal';
 import FoodList from '../../../components/Food/FoodList';
-import FoodPagination from '../../../components/Pagination/Pagination';
+import Pagination from '../../../components/Pagination/Pagination';
 import EditFoodModal from '../../../components/Food/EditFoodModal';
 import DownloadButtons from '../../../components/DownloadButtons/DownloadButtons';
 import CategoryFilter from '../../../components/Food/CategoryFilter';
@@ -258,7 +258,9 @@ const List = ({ url }) => {
             </div>
             <CategoryFilter categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} url={url} />
             <FoodList foods={currentItems} openEditModal={openEditModal} openModal={openModal} url={url} />
-            <FoodPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            )}
             <DeleteConfirmModal
                 isOpen={isModalOpen}
                 onClose={closeModal}

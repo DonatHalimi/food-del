@@ -263,7 +263,9 @@ const Categories = ({ url }) => {
                 <DownloadButtons downloadPDF={downloadPDF} printList={printList} />
             </div>
             <CategoryList categories={currentItems} openEditModal={openEditModal} openModal={openModal} url={url} />
-            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            )}
             <ConfirmModal
                 ref={deleteModalRef}
                 isOpen={isModalOpen}

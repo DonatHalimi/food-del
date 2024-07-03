@@ -108,7 +108,9 @@ const Orders = ({ url }) => {
                 <OrderSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             </div>
             <OrderList orders={currentOrders} url={url} statusHandler={statusHandler} />
-            <OrderPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            {totalPages > 1 && (
+                <OrderPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            )}
             <ToastContainer />
         </div>
     );

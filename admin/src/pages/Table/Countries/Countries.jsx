@@ -184,7 +184,9 @@ const Countries = ({ url }) => {
                 <CountrySearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             </div>
             <CountryList countries={currentItems} openEditModal={openEditModal} openModal={openModal} />
-            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
+            )}
             <ConfirmModal
                 ref={deleteModalRef}
                 isOpen={isModalOpen}
