@@ -3,6 +3,7 @@ import './FoodDisplay.css';
 import { StoreContext } from '../../context/StoreContext';
 import FoodItem from '../FoodItem/FoodItem';
 import Pagination from '../../../../admin/src/components/Pagination/Pagination'
+import FoodSkeleton from '../Skeleton/Food/FoodSkeleton';
 
 const FoodDisplay = () => {
     const { food_list, selectedCategory } = useContext(StoreContext);
@@ -10,6 +11,13 @@ const FoodDisplay = () => {
     const [itemsPerPage] = useState(15);
     const [sortBy, setSortBy] = useState('popularity');
     const [order, setOrder] = useState('asc');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setLoading(true);
+
+        setTimeout(() => setLoading(false), 1000);
+    }, [selectedCategory, sortBy, order]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -73,7 +81,7 @@ const FoodDisplay = () => {
                 <h2>Top dishes near you</h2>
                 <div className="sort-options">
                     <select onChange={handleSortChange} value={sortBy === 'popularity' ? 'popularity' : `${sortBy},${order}`}>
-                        <option value="popularity" disabled selected>Sort By</option>
+                        <option value="popularity" disabled>Sort By</option>
                         <option value="name,asc">Name (A-Z)</option>
                         <option value="name,desc">Name (Z-A)</option>
                         <option value="price,asc">Price (Low to High)</option>
@@ -82,18 +90,22 @@ const FoodDisplay = () => {
                 </div>
             </div>
             <div className="food-display-list">
-                {currentItems.map((item, index) => (
-                    <FoodItem
-                        key={index}
-                        id={item._id}
-                        name={item.name}
-                        description={item.description}
-                        price={item.price}
-                        image={item.image}
-                    />
-                ))}
+                {loading ? (
+                    Array.from({ length: filteredList.length }).map((_, index) => <FoodSkeleton key={index} />)
+                ) : (
+                    currentItems.map((item, index) => (
+                        <FoodItem
+                            key={index}
+                            id={item._id}
+                            name={item.name}
+                            description={item.description}
+                            price={item.price}
+                            image={item.image}
+                        />
+                    ))
+                )}
             </div>
-            {totalPages > 1 && (
+            {totalPages > 1 && !loading && (
                 <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} nextPage={nextPage} prevPage={prevPage} />
             )}
         </div>
