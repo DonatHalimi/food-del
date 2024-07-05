@@ -10,7 +10,8 @@
 }
 
 .my-orders h2 {
-    margin-top: 15px;
+    font-size: max(1.6vw, 24px);
+    font-weight: 600;
 }
 
 .my-orders-order {

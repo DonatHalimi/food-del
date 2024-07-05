@@ -13,14 +13,17 @@
     margin-bottom: 30px;
 }
 
-.breadcrumb a {
+.breadcrumb a,
+.breadcrumb span {
     color: tomato;
     text-decoration: none;
     font-weight: 600;
 }
 
-.breadcrumb a:hover {
+.breadcrumb a:hover,
+.breadcrumb span:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .food-details {

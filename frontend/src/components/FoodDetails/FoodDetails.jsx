@@ -1,3 +1,4 @@
+// FoodDetails.js
 import React, { useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './FoodDetails.css';
@@ -7,9 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const FoodDetails = () => {
     const { id } = useParams();
-    const { food_list, addToCart, url } = useContext(StoreContext)
-    const foodItem = food_list.find(item => item._id === id)
-    const navigate = useNavigate()
+    const { food_list, addToCart, url, setSelectedCategory } = useContext(StoreContext);
+    const foodItem = food_list.find(item => item._id === id);
+    const navigate = useNavigate();
 
     if (!foodItem) {
         return <div>Food item not found</div>;
@@ -19,13 +20,18 @@ const FoodDetails = () => {
         addToCart(itemId);
         toast.success(`${foodItem.name} has been added to your cart`, {
             onClick: (() => {
-                navigate('/cart')
+                navigate('/cart');
             }),
             style: {
                 cursor: 'pointer'
             }
-        })
-    }
+        });
+    };
+
+    const handleCategoryClick = (categoryName) => {
+        setSelectedCategory(categoryName);
+        navigate('/#explore-menu');
+    };
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -34,13 +40,13 @@ const FoodDetails = () => {
     return (
         <div className="food-details-container">
             <div className="breadcrumb">
-                <Link to="/">Home</Link> &gt; {foodItem.name}
+                <Link to="/">Home</Link> &gt; <span onClick={() => handleCategoryClick(foodItem.category.name)}>{foodItem.category.name}</span> &gt; {foodItem.name}
             </div>
             <div className="food-details">
                 <img src={url + "/images/" + foodItem.image} alt={foodItem.name} />
                 <div className="food-details-content">
                     <h2>{foodItem.name}</h2>
-                    <p className="category">Category: {foodItem.category.name}</p>
+                    <p className="category">Category: <span onClick={() => handleCategoryClick(foodItem.category.name)} className="category-link">{foodItem.category.name}</span></p>
                     <p>{foodItem.description}</p>
                     <p className="price">${foodItem.price.toFixed(2)}</p>
                     <div className="btn-container">

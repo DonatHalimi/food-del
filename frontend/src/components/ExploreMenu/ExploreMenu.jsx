@@ -12,6 +12,13 @@ const ExploreMenu = () => {
         setTimeout(() => setLoading(false), 1000);
     }, [selectedCategory]);
 
+    useEffect(() => {
+        const element = document.getElementById('explore-menu');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, []);
+
     return (
         <div>
             <div className='explore-menu' id='explore-menu'>
