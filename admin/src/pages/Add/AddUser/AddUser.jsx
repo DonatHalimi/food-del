@@ -37,7 +37,7 @@ const AddUser = ({ url }) => {
         <div className='add'>
             <form className='flex-col' onSubmit={onSubmitHandler}>
                 <div className="add-user-name flex-col">
-                    <p>User name</p>
+                    <p>Username</p>
                     <input onChange={onChangeHandler} value={data.name} type="text" name='name' placeholder='Enter name' required />
                 </div>
                 <div className="add-user-name flex-col">
