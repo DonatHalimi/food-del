@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Sidebar.css';
-import { assets } from '../../assets/assets';
 import { NavLink } from 'react-router-dom';
 import { useTabs } from '../../context/TabContext';
+import { HiOutlineInformationCircle } from "react-icons/hi";
+import { IoFastFoodOutline, IoEarthOutline } from "react-icons/io5";
+import { BiCategoryAlt, BiUser, BiPackage } from "react-icons/bi";
+import { PiCityLight } from "react-icons/pi";
+import { CiCirclePlus } from "react-icons/ci";
 
 const Sidebar = () => {
     const [expanded, setExpanded] = useState({
@@ -22,121 +26,147 @@ const Sidebar = () => {
         }));
     };
 
+    useEffect(() => {
+        const handleEscClick = (event) => {
+            if (event.key === 'Escape') {
+                setExpanded(prevState => {
+                    const allExpanded = Object.values(prevState).every(val => val);
+                    return {
+                        food: !allExpanded,
+                        category: !allExpanded,
+                        user: !allExpanded,
+                        country: !allExpanded,
+                        city: !allExpanded
+                    };
+                });
+            }
+        };
+
+        document.addEventListener('keydown', handleEscClick);
+
+        return () => {
+            document.removeEventListener('keydown', handleEscClick);
+        };
+    }, []);
+    
     const handleNavLinkClick = (label, path) => {
         addTab({ label, path });
     };
 
     return (
         <div className='sidebar'>
+            <div className="sidebar-info">
+                <p><HiOutlineInformationCircle size={20} className='info-icon' /><b>Escape</b>: Expand / Close </p>
+            </div>
             <div className="sidebar-options">
                 <div className="sidebar-option" onClick={() => toggleExpand('food')}>
-                    <img src={assets.order_icon} alt="" />
+                    <IoFastFoodOutline size={24} />
                     <p>Food</p>
                 </div>
                 <div className={`sidebar-sub-options ${expanded.food ? 'expanded' : ''}`}>
-                    <NavLink 
-                        to='/add' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/add'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Add Item', '/add')}>
-                        <img src={assets.add_icon} alt="" />
+                        <CiCirclePlus size={24} />
                         <p>Add Item</p>
                     </NavLink>
-                    <NavLink 
-                        to='/list' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/list'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Food Items', '/list')}>
-                        <img src={assets.order_icon} alt="" />
+                        <IoFastFoodOutline size={24} />
                         <p>Food Items</p>
                     </NavLink>
-                    <NavLink 
-                        to='/orders' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/orders'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Orders', '/orders')}>
-                        <img src={assets.order_icon} alt="" />
+                        <BiPackage size={24} />
                         <p>Orders</p>
                     </NavLink>
                 </div>
 
                 <div className="sidebar-option" onClick={() => toggleExpand('category')}>
-                    <img src={assets.order_icon} alt="" />
+                    <BiCategoryAlt size={24} />
                     <p>Category</p>
                 </div>
                 <div className={`sidebar-sub-options ${expanded.category ? 'expanded' : ''}`}>
-                    <NavLink 
-                        to='/add-category' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/add-category'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Add Category', '/add-category')}>
-                        <img src={assets.add_icon} alt="" />
+                        <CiCirclePlus size={24} />
                         <p>Add Category</p>
                     </NavLink>
-                    <NavLink 
-                        to='/categories' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/categories'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Categories', '/categories')}>
-                        <img src={assets.order_icon} alt="" />
+                        <BiCategoryAlt size={24} />
                         <p>Categories</p>
                     </NavLink>
                 </div>
 
                 <div className="sidebar-option" onClick={() => toggleExpand('user')}>
-                    <img src={assets.order_icon} alt="" />
+                    <BiUser size={24} />
                     <p>User</p>
                 </div>
                 <div className={`sidebar-sub-options ${expanded.user ? 'expanded' : ''}`}>
-                    <NavLink 
-                        to='/add-user' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/add-user'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Add User', '/add-user')}>
-                        <img src={assets.add_icon} alt="" />
+                        <CiCirclePlus size={24} />
                         <p>Add User</p>
                     </NavLink>
-                    <NavLink 
-                        to='/users' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/users'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Users', '/users')}>
-                        <img src={assets.order_icon} alt="" />
+                        <BiUser size={24} />
                         <p>Users</p>
                     </NavLink>
                 </div>
 
                 <div className="sidebar-option" onClick={() => toggleExpand('country')}>
-                    <img src={assets.order_icon} alt="" />
+                    <IoEarthOutline size={24} />
                     <p>Country</p>
                 </div>
                 <div className={`sidebar-sub-options ${expanded.country ? 'expanded' : ''}`}>
-                    <NavLink 
-                        to='/add-country' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/add-country'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Add Country', '/add-country')}>
-                        <img src={assets.add_icon} alt="" />
+                        <CiCirclePlus size={24} />
                         <p>Add Country</p>
                     </NavLink>
-                    <NavLink 
-                        to='/countries' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/countries'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Countries', '/countries')}>
-                        <img src={assets.order_icon} alt="" />
+                        <IoEarthOutline size={24} />
                         <p>Countries</p>
                     </NavLink>
                 </div>
 
                 <div className="sidebar-option" onClick={() => toggleExpand('city')}>
-                    <img src={assets.order_icon} alt="" />
+                    <PiCityLight size={24} />
                     <p>City</p>
                 </div>
                 <div className={`sidebar-sub-options ${expanded.city ? 'expanded' : ''}`}>
-                    <NavLink 
-                        to='/add-city' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/add-city'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Add City', '/add-city')}>
-                        <img src={assets.add_icon} alt="" />
+                        <CiCirclePlus size={24} />
                         <p>Add City</p>
                     </NavLink>
-                    <NavLink 
-                        to='/cities' 
-                        className="sidebar-option" 
+                    <NavLink
+                        to='/cities'
+                        className="sidebar-option"
                         onClick={() => handleNavLinkClick('Cities', '/cities')}>
-                        <img src={assets.order_icon} alt="" />
+                        <PiCityLight size={24} />
                         <p>Cities</p>
                     </NavLink>
                 </div>

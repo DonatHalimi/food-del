@@ -8,6 +8,13 @@ const Navbar = () => {
     const { tabs, closeTab } = useTabs();
     const tabsRef = useRef(null);
 
+    const handleAuxClick = (e, path) => {
+        if (e.button === 1) {
+            e.preventDefault()
+            closeTab(path);
+        }
+    };
+
     return (
         <div className='navbar'>
             <Link to='/'>
@@ -17,13 +24,18 @@ const Navbar = () => {
                 <div className='tabs-inner'>
                     {tabs.map(tab => (
                         <div key={tab.path} className='tab'>
-                            <NavLink to={tab.path} className="tab-link">{tab.label}</NavLink>
+                            <NavLink
+                                to={tab.path}
+                                className="tab-link"
+                                onAuxClick={(e) => handleAuxClick(e, tab.path)}
+                            >
+                                {tab.label}
+                            </NavLink>
                             <button className='close-tab' onClick={() => closeTab(tab.path)}>x</button>
                         </div>
                     ))}
                 </div>
             </div>
-            <img className='profile' src={assets.profile_image} alt="" />
         </div>
     );
 };

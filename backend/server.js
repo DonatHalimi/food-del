@@ -9,6 +9,7 @@ import orderRouter from './routes/orderRoute.js'
 import countryRoute from './routes/countryRoute.js'
 import categoryRoute from './routes/categoryRoute.js'
 import cityRouter from './routes/cityRoute.js'
+import dashboardRoutes from './routes/dashboardRoutes.js'
 
 // app config
 const app = express()
@@ -30,6 +31,7 @@ app.use('/api/order', orderRouter)
 app.use('/api/country', countryRoute)
 app.use('/api/category', categoryRoute)
 app.use('/api/city', cityRouter)
+app.use('/api/dashboard', dashboardRoutes);
 
 app.get("/", (req, res) => {
     res.send("API Working")

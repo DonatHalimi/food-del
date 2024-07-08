@@ -40,8 +40,9 @@
     margin-bottom: 20px;
 }
 
-.order-title h3 {
+.order-title-container h3 {
     margin: 0;
+    color: #262626;
 }
 
 .order-search input {

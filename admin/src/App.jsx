@@ -16,6 +16,7 @@ import Cities from './pages/Table/Cities/Cities';
 import AddUser from './pages/Add/AddUser/AddUser';
 import Users from './pages/Table/Users/Users';
 import ToTop from './components/ToTop/ToTop';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 const App = () => {
   const url = "http://localhost:4000";
@@ -28,7 +29,8 @@ const App = () => {
       <div className='app-content'>
         <Sidebar />
         <Routes>
-          <Route path='/add' element={<AddFood url={url} />} />
+          <Route path='/' element={<Dashboard url={url} />} />
+          < Route path='/add' element={<AddFood url={url} />} />
           <Route path='/list' element={<List url={url} />} />
           <Route path='/orders' element={<Orders url={url} />} />
           <Route path='/countries' element={<Countries url={url} />} />

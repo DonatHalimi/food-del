@@ -6,6 +6,27 @@
     font-size: max(1vw, 10px);
 }
 
+.sidebar-info {
+    background-color: #e9ecef;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: -20px;
+}
+
+.sidebar-info p {
+    position: relative;
+    bottom: 3.5px;
+    margin: 0;
+}
+
+.info-icon {
+    position: relative;
+    top: 4.6px;
+    right: 3px;
+}
+
 .sidebar-options {
     padding-top: 50px;
     padding-left: 20%;
