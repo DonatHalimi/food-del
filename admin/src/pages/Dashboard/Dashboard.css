@@ -5,6 +5,7 @@
 .stats {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
     margin-bottom: 20px;
 }
 
@@ -15,31 +16,65 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    transition: transform 0.4s ease-in-out;
+}
+
+.stat-item:hover {
+    transform: scale(1.05);
 }
 
 .stat-item h3 {
     margin: 10px 0;
+    font-size: 18px;
+    color: #333;
 }
 
 .stat-item p {
     font-size: 24px;
     font-weight: bold;
+    color: #555;
 }
 
 .charts {
     display: flex;
-    justify-content: space-around;
+    justify-content: start;
     flex-wrap: wrap;
+    margin-left: 8px;
 }
 
 .chart {
-    width: 30%;
+    width: 45%;
     margin: 20px 0;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s ease-in-out;
+    align-items: left;
+}
+
+.chart:hover {
+    transform: scale(1.05);
 }
 
 @media (max-width: 768px) {
     .chart {
         width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stat-item {
+        width: 80%;
     }
 }

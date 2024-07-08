@@ -30,7 +30,7 @@ const App = () => {
         <Sidebar />
         <Routes>
           <Route path='/' element={<Dashboard url={url} />} />
-          < Route path='/add' element={<AddFood url={url} />} />
+          <Route path='/add' element={<AddFood url={url} />} />
           <Route path='/list' element={<List url={url} />} />
           <Route path='/orders' element={<Orders url={url} />} />
           <Route path='/countries' element={<Countries url={url} />} />

@@ -3,8 +3,7 @@ import {
     getUserCount,
     getOrderCount,
     getTotalRevenue,
-    getUserGrowth,
-    getRevenueTrend
+    getProductCategoryData
 } from '../controllers/dashboardController.js';
 
 const router = express.Router();
@@ -12,7 +11,6 @@ const router = express.Router();
 router.get('/users/count', getUserCount);
 router.get('/orders/count', getOrderCount);
 router.get('/revenue', getTotalRevenue);
-router.get('/users/growth', getUserGrowth);
-router.get('/revenue/trend', getRevenueTrend);
+router.get('/product-categories', getProductCategoryData);
 
 export default router;

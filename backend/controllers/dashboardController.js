@@ -1,5 +1,7 @@
 import userModel from '../models/userModel.js';
 import orderModel from '../models/orderModel.js';
+import categoryModel from '../models/categoryModel.js';
+import foodModel from '../models/foodModel.js';
 
 // Get total number of users
 export const getUserCount = async (req, res) => {
@@ -35,30 +37,23 @@ export const getTotalRevenue = async (req, res) => {
     }
 };
 
-// Get user growth data
-export const getUserGrowth = async (req, res) => {
+// Get product category data
+export const getProductCategoryData = async (req, res) => {
     try {
-        // Simulate user growth data (You should replace this with your actual logic)
-        const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
-        const data = [50, 100, 150, 200, 250, 300];  // Replace with real data
+        const categories = await categoryModel.find();
+        const categoryDataPromises = categories.map(async (category) => {
+            const count = await foodModel.countDocuments({ category: category._id });
+            return { name: category.name, count };
+        });
+
+        const categoryData = await Promise.all(categoryDataPromises);
+
+        const labels = categoryData.map(item => item.name);
+        const data = categoryData.map(item => item.count);
 
         res.json({ success: true, labels, data });
     } catch (error) {
-        console.error('Error fetching user growth data:', error);
-        res.status(500).json({ success: false, message: 'Error fetching user growth data' });
-    }
-};
-
-// Get revenue trend data
-export const getRevenueTrend = async (req, res) => {
-    try {
-        // Simulate revenue trend data (You should replace this with your actual logic)
-        const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
-        const data = [1000, 2000, 3000, 4000, 5000, 6000];  // Replace with real data
-
-        res.json({ success: true, labels, data });
-    } catch (error) {
-        console.error('Error fetching revenue trend data:', error);
-        res.status(500).json({ success: false, message: 'Error fetching revenue trend data' });
+        console.error('Error fetching product category data:', error);
+        res.status(500).json({ success: false, message: 'Error fetching product category data' });
     }
 };
