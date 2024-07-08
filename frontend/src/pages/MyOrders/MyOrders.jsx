@@ -18,11 +18,9 @@ const MyOrders = () => {
     const [loading, setLoading] = useState(true);
 
     const getOrders = async () => {
-        console.log('Fetching orders with token:', token);
         try {
             const response = await axios.post(url + "/api/order/userorders", {}, { headers: { token } });
             setData(response.data.data);
-            console.log('Orders fetched:', response.data.data);
             setTotalPages(Math.ceil(response.data.data.length / itemsPerPage));
             setLoading(false);
         } catch (error) {

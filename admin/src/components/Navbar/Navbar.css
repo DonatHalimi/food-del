@@ -3,12 +3,91 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px 4%;
+    color: white;
+    position: relative;
 }
 
-.navbar .logo {
+.logo {
     width: max(30%, 150px);
 }
 
-.navbar .profile {
+.profile {
     width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.tabs {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 80px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.tabs::-webkit-scrollbar {
+    height: 7px;
+}
+
+.tabs::-webkit-scrollbar-thumb {
+    background-color: #CACFCD;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+.tabs::-webkit-scrollbar-thumb:hover {
+    background-color: #acb2b0;
+    transition: all 0.3s;
+}
+
+.tabs::-webkit-scrollbar-track {
+    background-color: #FFFFFF;
+}
+
+.tabs::-webkit-scrollbar-corner {
+    background-color: #FFFFFF;
+}
+
+.tabs-inner {
+    display: flex;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    background-color: #FFF0ED;
+    border: 1px solid #FF6347;
+    border-radius: 20px;
+    margin: 0 5px;
+    padding: 5px 10px;
+    color: black;
+    flex-shrink: 0;
+    transition: background-color 0.6s ease-in-out;
+}
+
+.tab:hover {
+    background-color: #fde1dc;
+}
+
+.tab-link {
+    color: black;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    transition: background-color 0.3s;
+}
+
+.close-tab {
+    background: none;
+    border: none;
+    color: black;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.close-tab:hover {
+    color: #e74c3c;
 }
