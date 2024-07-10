@@ -1,10 +1,10 @@
+// FoodDetails.js
 import React, { useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './FoodDetails.css';
 import { StoreContext } from '../../context/StoreContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Review from '../Review/Review';
 
 const FoodDetails = () => {
     const { id } = useParams();
@@ -19,8 +19,12 @@ const FoodDetails = () => {
     const handleAddToCart = (itemId) => {
         addToCart(itemId);
         toast.success(`${foodItem.name} has been added to your cart`, {
-            onClick: () => navigate('/cart'),
-            style: { cursor: 'pointer' }
+            onClick: (() => {
+                navigate('/cart');
+            }),
+            style: {
+                cursor: 'pointer'
+            }
         });
     };
 
@@ -50,7 +54,6 @@ const FoodDetails = () => {
                     </div>
                 </div>
             </div>
-            <Review foodId={foodItem._id} url={url} />
             <ToastContainer />
         </div>
     );
