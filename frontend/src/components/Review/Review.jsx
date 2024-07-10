@@ -1,4 +1,3 @@
-// src/components/Review/Review.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -33,6 +32,7 @@ const Review = ({ foodId, url }) => {
             setReviews(data.data);
         } catch (err) {
             setError('Error submitting review');
+            console.error('Error submitting review:', err);
         }
     };
 
@@ -62,7 +62,7 @@ const Review = ({ foodId, url }) => {
             </div>
             <div>
                 <h3>Add a review</h3>
-                <select value={rating} onChange={(e) => setRating(e.target.value)}>
+                <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
                     <option value="" disabled>Select rating</option>
                     {[1, 2, 3, 4, 5].map(r => (
                         <option key={r} value={r}>{r}</option>

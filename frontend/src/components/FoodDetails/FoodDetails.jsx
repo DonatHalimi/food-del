@@ -1,4 +1,3 @@
-// src/components/FoodDetails/FoodDetails.jsx
 import React, { useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './FoodDetails.css';
