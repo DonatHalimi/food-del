@@ -62,6 +62,14 @@
     transform: scale(1.05);
 }
 
+.pizza-loading {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    top: 10px;
+    left: 25px;
+}
+
 @media (max-width: 768px) {
     .chart {
         width: 100%;

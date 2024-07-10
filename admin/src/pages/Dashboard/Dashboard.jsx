@@ -6,6 +6,7 @@ import { FaUsers, FaDollarSign } from 'react-icons/fa';
 import { BiPackage } from 'react-icons/bi';
 import CountUp from 'react-countup';
 import './Dashboard.css';
+import pizza_loading from '../../assets/pizza-loading.gif'
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement);
@@ -15,6 +16,7 @@ const Dashboard = ({ url }) => {
     const [orderCount, setOrderCount] = useState(0);
     const [totalRevenue, setTotalRevenue] = useState(0);
     const [productCategoryData, setProductCategoryData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,6 +41,8 @@ const Dashboard = ({ url }) => {
                         },
                     ],
                 });
+
+                setTimeout(() => setLoading(false), 2000);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
                 console.log(error.response ? error.response.data : error.message);
@@ -70,7 +74,7 @@ const Dashboard = ({ url }) => {
             <div className='charts'>
                 <div className='chart'>
                     <h3>Product Categories</h3>
-                    {productCategoryData ? <Pie data={productCategoryData} /> : <p>Loading...</p>}
+                    {loading ? <img src={pizza_loading} alt="loading" className='pizza-loading' /> : <Pie data={productCategoryData} />}
                 </div>
             </div>
         </div>
