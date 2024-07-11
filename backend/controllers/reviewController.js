@@ -1,67 +1,66 @@
 import reviewModel from '../models/reviewModel.js';
-import foodModel from '../models/foodModel.js';
 
+// Add a review
 const addReview = async (req, res) => {
-    const { foodId, rating, comment } = req.body;
-    console.log('Add review called', { foodId, rating, comment });
-
     try {
-        if (!req.user || !req.user._id) {
-            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        console.log('Received review request:', req.body);
+
+        const { userId, food, rating, comment } = req.body;
+
+        // Check if all required fields are present
+        if (!userId) {
+            console.log('Missing userId');
+            return res.status(400).json({ success: false, message: 'Missing userId' });
+        }
+        if (!food) {
+            console.log('Missing food id');
+            return res.status(400).json({ success: false, message: 'Missing food id' });
+        }
+        if (!rating) {
+            console.log('Missing rating');
+            return res.status(400).json({ success: false, message: 'Missing rating' });
+        }
+        if (!comment) {
+            console.log('Missing comment');
+            return res.status(400).json({ success: false, message: 'Missing comment' });
         }
 
-        console.log('Authenticated user:', req.user);
-
+        console.log('Creating new review model');
         const review = new reviewModel({
-            user: req.user._id,
-            food: foodId,
+            user: userId,
+            food,
             rating,
             comment
         });
 
+        console.log('Saving review');
         await review.save();
-        console.log('Review saved:', review);
 
-        const food = await foodModel.findById(foodId);
-        if (!food) {
-            return res.status(404).json({ success: false, message: 'Food not found' });
-        }
-
-        console.log('Food found:', food);
-
-        // Recalculate the average rating and number of reviews
-        const reviews = await reviewModel.find({ food: foodId });
-        const numberOfReviews = reviews.length;
-        const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / numberOfReviews;
-
-        food.numberOfReviews = numberOfReviews;
-        food.averageRating = averageRating;
-
-        await food.save();
-        console.log('Food updated:', food);
-
-        res.json({ success: true, message: 'Review added successfully' });
+        console.log('Review saved successfully');
+        res.json({ success: true, message: "Review added successfully", review });
     } catch (error) {
-        console.error('Error adding review:', error);
-        res.status(500).json({ success: false, message: 'Error adding review' });
+        console.log('Error in addReview:', error);
+        if (error.name === 'ValidationError') {
+            const validationErrors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({ success: false, message: 'Validation error', errors: validationErrors });
+        }
+        if (error.name === 'CastError') {
+            return res.status(400).json({ success: false, message: 'Invalid ID format', field: error.path });
+        }
+        res.status(500).json({ success: false, message: 'Error adding review', error: error.message });
     }
 };
 
+// Get reviews for a food item
 const getReviews = async (req, res) => {
     try {
         const { foodId } = req.params;
-        console.log('Fetching reviews for foodId:', foodId);
-
         const reviews = await reviewModel.find({ food: foodId }).populate('user', 'name');
+
         const food = await foodModel.findById(foodId);
-
-        if (!food) {
-            return res.status(404).json({ success: false, message: 'Food not found' });
-        }
-
         res.json({ success: true, data: reviews, food });
     } catch (error) {
-        console.error('Error in getReviews:', error);
+        console.log('Error in getReviews:', error);
         res.status(500).json({ success: false, message: 'Error getting reviews' });
     }
 };

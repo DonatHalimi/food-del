@@ -33,10 +33,7 @@ const Reviews = ({ foodId, url }) => {
 
     const submitReview = async () => {
         try {
-            await axios.post(`${url}/api/review/add`,
-                { foodId, rating, comment },
-                { headers: { Authorization: `Bearer ${token}` } });
-
+            await axios.post(`${url}/api/review/add`, { foodId, rating, comment })
             setRating(0);
             setComment('');
             const response = await axios.get(`${url}/api/review/list/${foodId}`);
