@@ -1,10 +1,10 @@
-// FoodDetails.js
 import React, { useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './FoodDetails.css';
 import { StoreContext } from '../../context/StoreContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Reviews from '../Reviews/Reviews';
 
 const FoodDetails = () => {
     const { id } = useParams();
@@ -49,11 +49,13 @@ const FoodDetails = () => {
                     <p className="category">Category: <span onClick={() => handleCategoryClick(foodItem.category.name)} className="category-link">{foodItem.category.name}</span></p>
                     <p>{foodItem.description}</p>
                     <p className="price">${foodItem.price.toFixed(2)}</p>
+                    <p className="rating">Average Rating: {foodItem.averageRating.toFixed(1)} ({foodItem.numberOfReviews} reviews)</p>
                     <div className="btn-container">
                         <button className="btn" onClick={() => handleAddToCart(foodItem._id)}>Add to Cart</button>
                     </div>
                 </div>
             </div>
+            <Reviews foodId={id} url={url} />
             <ToastContainer />
         </div>
     );
