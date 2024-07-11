@@ -7,15 +7,15 @@ const Reviews = ({ foodId, url }) => {
     const [comment, setComment] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [food, setFood] = useState({});
 
     useEffect(() => {
         const fetchReviews = async () => {
             try {
                 const response = await axios.get(`${url}/api/review/list/${foodId}`);
-                if (response.data && Array.isArray(response.data.data)) {
+                if (response.data) {
                     setReviews(response.data.data);
-                } else {
-                    setReviews([]);
+                    setFood(response.data.food);
                 }
             } catch (err) {
                 console.error('Error fetching reviews:', err);
@@ -35,8 +35,9 @@ const Reviews = ({ foodId, url }) => {
             setRating(0);
             setComment('');
             const response = await axios.get(`${url}/api/review/list/${foodId}`);
-            if (response.data && Array.isArray(response.data.data)) {
+            if (response.data) {
                 setReviews(response.data.data);
+                setFood(response.data.food);
             }
         } catch (err) {
             console.error('Error submitting review:', err);
@@ -75,6 +76,10 @@ const Reviews = ({ foodId, url }) => {
                 </select>
                 <textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Write your review here" />
                 <button onClick={submitReview}>Submit</button>
+            </div>
+            <div>
+                <h3>Food Details</h3>
+                <p>Average Rating: {food.averageRating?.toFixed(1)} ({food.numberOfReviews} reviews)</p>
             </div>
         </div>
     );

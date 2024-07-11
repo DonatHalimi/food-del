@@ -44,12 +44,13 @@ const addReview = async (req, res) => {
     }
 };
 
-// Get reviews for a food item
 const getReviews = async (req, res) => {
     try {
         const { foodId } = req.params;
         const reviews = await reviewModel.find({ food: foodId }).populate('user', 'name');
-        res.json({ success: true, data: reviews });
+        const food = await foodModel.findById(foodId);
+
+        res.json({ success: true, data: reviews, food });
     } catch (error) {
         console.log('Error in getReviews:', error);
         res.status(500).json({ success: false, message: 'Error getting reviews' });
