@@ -1,4 +1,5 @@
 import reviewModel from '../models/reviewModel.js';
+import foodModel from '../models/foodModel.js';
 
 const addReview = async (req, res) => {
     const { foodId, rating, comment } = req.body;
@@ -26,6 +27,8 @@ const addReview = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Food not found' });
         }
 
+        console.log('Food found:', food);
+
         // Recalculate the average rating and number of reviews
         const reviews = await reviewModel.find({ food: foodId });
         const numberOfReviews = reviews.length;
@@ -47,12 +50,18 @@ const addReview = async (req, res) => {
 const getReviews = async (req, res) => {
     try {
         const { foodId } = req.params;
+        console.log('Fetching reviews for foodId:', foodId);
+
         const reviews = await reviewModel.find({ food: foodId }).populate('user', 'name');
         const food = await foodModel.findById(foodId);
 
+        if (!food) {
+            return res.status(404).json({ success: false, message: 'Food not found' });
+        }
+
         res.json({ success: true, data: reviews, food });
     } catch (error) {
-        console.log('Error in getReviews:', error);
+        console.error('Error in getReviews:', error);
         res.status(500).json({ success: false, message: 'Error getting reviews' });
     }
 };

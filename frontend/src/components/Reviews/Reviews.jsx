@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { StoreContext } from '../../context/StoreContext';
 
 const Reviews = ({ foodId, url }) => {
     const [reviews, setReviews] = useState([]);
@@ -8,6 +9,7 @@ const Reviews = ({ foodId, url }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [food, setFood] = useState({});
+    const { token } = useContext(StoreContext);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -31,7 +33,10 @@ const Reviews = ({ foodId, url }) => {
 
     const submitReview = async () => {
         try {
-            await axios.post(`${url}/api/review/add`, { foodId, rating, comment });
+            await axios.post(`${url}/api/review/add`,
+                { foodId, rating, comment },
+                { headers: { Authorization: `Bearer ${token}` } });
+
             setRating(0);
             setComment('');
             const response = await axios.get(`${url}/api/review/list/${foodId}`);
