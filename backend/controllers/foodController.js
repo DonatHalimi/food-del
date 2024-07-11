@@ -1,5 +1,4 @@
 import foodModel from '../models/foodModel.js';
-import reviewModel from '../models/reviewModel.js';
 import fs from 'fs';
 
 // add food item
@@ -25,39 +24,19 @@ const addFood = async (req, res) => {
 
 const listFood = async (req, res) => {
     try {
-        const sortBy = req.query.sortBy || 'createdAt';
+        const sortBy = req.query.sortBy || 'popularity';
         const order = req.query.order === 'desc' ? -1 : 1;
 
-        let foods = await foodModel.find({}).populate('category', 'name description');
-
-        if (sortBy === 'popularity' || sortBy === 'rating') {
-            const foodReviews = await reviewModel.aggregate([
-                { $group: {
-                    _id: '$food',
-                    averageRating: { $avg: '$rating' },
-                    numberOfReviews: { $sum: 1 }
-                }}
-            ]);
-
-            const reviewMap = new Map(foodReviews.map(item => [item._id.toString(), item]));
-
-            foods = foods.map(food => {
-                const review = reviewMap.get(food._id.toString()) || { averageRating: 0, numberOfReviews: 0 };
-                return {
-                    ...food.toObject(),
-                    averageRating: review.averageRating,
-                    numberOfReviews: review.numberOfReviews
-                };
-            });
-
-            if (sortBy === 'popularity') {
-                foods.sort((a, b) => order * (b.numberOfReviews - a.numberOfReviews));
-            } else if (sortBy === 'rating') {
-                foods.sort((a, b) => order * (b.averageRating - a.averageRating));
-            }
+        let sortCriteria;
+        if (sortBy === 'popularity') {
+            sortCriteria = { popularity: order };
         } else {
-            foods.sort((a, b) => order * (a[sortBy] > b[sortBy] ? 1 : -1));
+            sortCriteria = { [sortBy]: order };
         }
+
+        const foods = await foodModel.find({})
+            .populate('category', 'name description')
+            .sort(sortCriteria);
 
         res.json({ success: true, data: foods });
     } catch (error) {

@@ -30,9 +30,7 @@ const FoodDisplay = () => {
 
         filteredList = filteredList.sort((a, b) => {
             if (sortBy === 'popularity') {
-                return order === 'asc' ? a.numberOfReviews - b.numberOfReviews : b.numberOfReviews - a.numberOfReviews;
-            } else if (sortBy === 'rating') {
-                return order === 'asc' ? a.averageRating - b.averageRating : b.averageRating - a.averageRating;
+                return b.popularity - a.popularity;
             } else {
                 if (a[sortBy] < b[sortBy]) return order === 'asc' ? -1 : 1;
                 if (a[sortBy] > b[sortBy]) return order === 'asc' ? 1 : -1;
@@ -45,9 +43,14 @@ const FoodDisplay = () => {
 
     const handleSortChange = (e) => {
         const value = e.target.value;
-        const [sortField, sortOrder] = value.split(',');
-        setSortBy(sortField);
-        setOrder(sortOrder);
+        if (value === 'popularity') {
+            setSortBy('popularity');
+            setOrder('asc');
+        } else {
+            const [sortField, sortOrder] = value.split(',');
+            setSortBy(sortField);
+            setOrder(sortOrder);
+        }
     };
 
     const filteredList = sortAndFilterFoodList();
@@ -77,11 +80,8 @@ const FoodDisplay = () => {
             <div className="food-display-header">
                 <h2>Top dishes near you</h2>
                 <div className="sort-options">
-                    <select onChange={handleSortChange} value={`${sortBy},${order}`}>
-                        <option value="popularity,desc">Most Popular</option>
-                        <option value="popularity,asc">Least Popular</option>
-                        <option value="rating,desc">Highest Rated</option>
-                        <option value="rating,asc">Lowest Rated</option>
+                    <select onChange={handleSortChange} value={sortBy === 'popularity' ? 'popularity' : `${sortBy},${order}`}>
+                        <option value="popularity" disabled>Sort By</option>
                         <option value="name,asc">Name (A-Z)</option>
                         <option value="name,desc">Name (Z-A)</option>
                         <option value="price,asc">Price (Low to High)</option>

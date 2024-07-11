@@ -1,23 +1,16 @@
+// FoodDetails.js
 import React, { useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './FoodDetails.css';
 import { StoreContext } from '../../context/StoreContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Reviews from '../Reviews/Reviews';
 
 const FoodDetails = () => {
     const { id } = useParams();
     const { food_list, addToCart, url, setSelectedCategory } = useContext(StoreContext);
-    const navigate = useNavigate();
-
     const foodItem = food_list.find(item => item._id === id);
-
-    useEffect(() => {
-        if (!foodItem) {
-            console.error('Food item not found');
-        }
-    }, [foodItem]);
+    const navigate = useNavigate();
 
     if (!foodItem) {
         return <div>Food item not found</div>;
@@ -26,8 +19,12 @@ const FoodDetails = () => {
     const handleAddToCart = (itemId) => {
         addToCart(itemId);
         toast.success(`${foodItem.name} has been added to your cart`, {
-            onClick: () => navigate('/cart'),
-            style: { cursor: 'pointer' }
+            onClick: (() => {
+                navigate('/cart');
+            }),
+            style: {
+                cursor: 'pointer'
+            }
         });
     };
 
@@ -52,13 +49,11 @@ const FoodDetails = () => {
                     <p className="category">Category: <span onClick={() => handleCategoryClick(foodItem.category.name)} className="category-link">{foodItem.category.name}</span></p>
                     <p>{foodItem.description}</p>
                     <p className="price">${foodItem.price.toFixed(2)}</p>
-                    <p className="rating">Average Rating: {foodItem.averageRating.toFixed(1)} ({foodItem.numberOfReviews} reviews)</p>
                     <div className="btn-container">
                         <button className="btn" onClick={() => handleAddToCart(foodItem._id)}>Add to Cart</button>
                     </div>
                 </div>
             </div>
-            <Reviews foodId={id} url={url} />
             <ToastContainer />
         </div>
     );
