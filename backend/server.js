@@ -10,6 +10,7 @@ import countryRoute from './routes/countryRoute.js'
 import categoryRoute from './routes/categoryRoute.js'
 import cityRouter from './routes/cityRoute.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
+import reviewRouter from './routes/reviewRoute.js'
 
 // app config
 const app = express()
@@ -32,6 +33,7 @@ app.use('/api/country', countryRoute)
 app.use('/api/category', categoryRoute)
 app.use('/api/city', cityRouter)
 app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/review', reviewRouter)
 
 app.get("/", (req, res) => {
     res.send("API Working")

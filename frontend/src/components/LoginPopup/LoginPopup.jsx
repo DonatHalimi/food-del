@@ -54,6 +54,7 @@ const LoginPopup = ({ setShowLogIn }) => {
                 localStorage.setItem("token", response.data.token);
                 setShowLogIn(false);
                 toast.success(toastMessage);
+                console.log(response.data.token)
             } else {
                 alert(response.data.message);
             }

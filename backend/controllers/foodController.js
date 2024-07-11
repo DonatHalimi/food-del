@@ -1,4 +1,5 @@
 import foodModel from '../models/foodModel.js';
+import reviewModel from '../models/reviewModel.js';
 import fs from 'fs';
 
 // add food item
@@ -22,22 +23,41 @@ const addFood = async (req, res) => {
     }
 };
 
-// server/controllers/foodController.js
 const listFood = async (req, res) => {
     try {
-        const sortBy = req.query.sortBy || 'popularity';
+        const sortBy = req.query.sortBy || 'createdAt';
         const order = req.query.order === 'desc' ? -1 : 1;
 
-        let sortCriteria;
-        if (sortBy === 'popularity') {
-            sortCriteria = { popularity: order };
-        } else {
-            sortCriteria = { [sortBy]: order };
-        }
+        let foods = await foodModel.find({}).populate('category', 'name description');
 
-        const foods = await foodModel.find({})
-            .populate('category', 'name description')
-            .sort(sortCriteria);
+        if (sortBy === 'popularity' || sortBy === 'rating') {
+            const foodReviews = await reviewModel.aggregate([
+                { $group: {
+                    _id: '$food',
+                    averageRating: { $avg: '$rating' },
+                    numberOfReviews: { $sum: 1 }
+                }}
+            ]);
+
+            const reviewMap = new Map(foodReviews.map(item => [item._id.toString(), item]));
+
+            foods = foods.map(food => {
+                const review = reviewMap.get(food._id.toString()) || { averageRating: 0, numberOfReviews: 0 };
+                return {
+                    ...food.toObject(),
+                    averageRating: review.averageRating,
+                    numberOfReviews: review.numberOfReviews
+                };
+            });
+
+            if (sortBy === 'popularity') {
+                foods.sort((a, b) => order * (b.numberOfReviews - a.numberOfReviews));
+            } else if (sortBy === 'rating') {
+                foods.sort((a, b) => order * (b.averageRating - a.averageRating));
+            }
+        } else {
+            foods.sort((a, b) => order * (a[sortBy] > b[sortBy] ? 1 : -1));
+        }
 
         res.json({ success: true, data: foods });
     } catch (error) {

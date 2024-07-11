@@ -23,7 +23,7 @@ const Navbar = () => {
             <div className='tabs' ref={tabsRef}>
                 <div className='tabs-inner'>
                     {tabs.map(tab => (
-                        <div key={tab.path} className='tab'>
+                        <div key={tab.path} className={`tab ${tab.path === window.location.pathname ? 'active' : ''}`}>
                             <NavLink
                                 to={tab.path}
                                 className="tab-link"

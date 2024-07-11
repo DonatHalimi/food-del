@@ -27,8 +27,8 @@
 .tab {
     display: flex;
     align-items: center;
-    background-color: #FFF0ED;
-    border: 1px solid #FF6347;
+    background-color: white;
+    border: 1px solid #a9a9a9;
     border-radius: 20px;
     margin: 0 5px;
     padding: 5px 10px;
@@ -38,7 +38,12 @@
 }
 
 .tab:hover {
-    background-color: #fde1dc;
+    background-color: #FFF0ED;
+}
+
+.tab.active {
+    background-color: #FFF0ED;
+    border: 1px solid #FF6347;
 }
 
 .tab-link {
