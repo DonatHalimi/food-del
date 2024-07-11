@@ -9,8 +9,15 @@ import Reviews from '../Reviews/Reviews';
 const FoodDetails = () => {
     const { id } = useParams();
     const { food_list, addToCart, url, setSelectedCategory } = useContext(StoreContext);
-    const foodItem = food_list.find(item => item._id === id);
     const navigate = useNavigate();
+
+    const foodItem = food_list.find(item => item._id === id);
+
+    useEffect(() => {
+        if (!foodItem) {
+            console.error('Food item not found');
+        }
+    }, [foodItem]);
 
     if (!foodItem) {
         return <div>Food item not found</div>;
@@ -19,12 +26,8 @@ const FoodDetails = () => {
     const handleAddToCart = (itemId) => {
         addToCart(itemId);
         toast.success(`${foodItem.name} has been added to your cart`, {
-            onClick: (() => {
-                navigate('/cart');
-            }),
-            style: {
-                cursor: 'pointer'
-            }
+            onClick: () => navigate('/cart'),
+            style: { cursor: 'pointer' }
         });
     };
 

@@ -11,7 +11,7 @@ const Reviews = ({ foodId, url }) => {
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const response = await axios.get(`${url}/api/reviews/list/${foodId}`);
+                const response = await axios.get(`${url}/api/review/list/${foodId}`);
                 if (response.data && Array.isArray(response.data.data)) {
                     setReviews(response.data.data);
                 } else {
@@ -31,10 +31,10 @@ const Reviews = ({ foodId, url }) => {
 
     const submitReview = async () => {
         try {
-            await axios.post(`${url}/api/reviews/add`, { foodId, rating, comment });
+            await axios.post(`${url}/api/review/add`, { foodId, rating, comment });
             setRating(0);
             setComment('');
-            const response = await axios.get(`${url}/api/reviews/list/${foodId}`);
+            const response = await axios.get(`${url}/api/review/list/${foodId}`);
             if (response.data && Array.isArray(response.data.data)) {
                 setReviews(response.data.data);
             }
